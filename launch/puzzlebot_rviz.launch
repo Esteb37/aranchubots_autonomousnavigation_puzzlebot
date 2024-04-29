@@ -9,9 +9,4 @@
         <node pkg="robot_state_publisher" type="robot_state_publisher" name="simulated_state_publisher" output="screen"/>
 
 		<node pkg="rviz" type="rviz" name="rviz" output="screen"/>
-
-		<node pkg="puzzlebot_sim" type="localisation.py" name="localisation" output="screen"/>
-
-		<node pkg="puzzlebot_sim" type="joint_publisher.py" name="joint_publisher" output="screen"/>
-
 </launch>
