@@ -1,7 +1,18 @@
-# Aranchubots
+# 📌 Autonomous Navigation PuzzleBot 
 
-## Integrantes
-- Esteban Padilla Cerdio - A01703068
-- Karen Cebreros López - A01704254
-- Naomi Estefania Nieto Vega - A01706095
-- Aranza Leal Aguirre - A01751706
+## 🤖 Team: Aranchubots 
+
+* A01703068 | Esteban Padilla Cerdio
+* A01704254 | Karen Cebreros López
+* A01706095 | Naomi Estefania Nieto Vega
+* A01751706 | Aranza Leal Aguirre
+
+## Use instructions:
+
+"Explanation"
+
+1. Code example
+```
+aranchubots.py
+```
+
