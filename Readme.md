@@ -1,6 +1,6 @@
-# 📌 Autonomous Navigation PuzzleBot 
+# 🤖 Autonomous Navigation PuzzleBot 
 
-## 🤖 Team: Aranchubots 
+## 📌 Team: Aranchubots 
 
 * A01703068 | Esteban Padilla Cerdio
 * A01704254 | Karen Cebreros López
