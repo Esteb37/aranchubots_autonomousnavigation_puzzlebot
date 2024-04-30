@@ -499,7 +499,7 @@
       <collision name='Wall_46_Collision'>
         <geometry>
           <box>
-            <size>0.4 0.1 0.3</size>
+            <size>0.2 0.1 0.3</size>
           </box>
         </geometry>
         <pose>0 0 0.15 0 -0 0</pose>
@@ -508,7 +508,7 @@
         <pose>0 0 0.15 0 -0 0</pose>
         <geometry>
           <box>
-            <size>0.4 0.1 0.3</size>
+            <size>0.2 0.1 0.3</size>
           </box>
         </geometry>
         <material>
@@ -522,7 +522,7 @@
           <layer>0</layer>
         </meta>
       </visual>
-      <pose>0.893771 -0.993829 0 0 -0 0</pose>
+      <pose>0.793484 -0.993695 0 0 -0 0</pose>
     </link>
     <link name='Wall_48'>
       <collision name='Wall_48_Collision'>
