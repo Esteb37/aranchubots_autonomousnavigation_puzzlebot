@@ -1,0 +1,31 @@
+#Local planner uses local costmap to calculate local plans
+#Created directly from sensor readings 
+#Depending on where on the map the robot is currently at that's the obstacle
+#information that will be showed in RVIZ. This is due to the rolling window approach
+#This optimizes computer resources 
+#Local costmap detects new objects that appear in the simulation, global costmap don't
+local_costmap:
+   #Global frame for local costmap. Must be odom if no static map is used
+   #map used in Jackal course
+   global_frame: map #Default: odom
+   robot_base_frame: base_link #Default: base_link
+   #How often (frequency) the local costmap will be updated 
+   #Cycle: sensor data comes in, marking and clearing operations, 
+   #cost values assigned to each cell in grid of costmap, obstacle inflation 
+   #is performed where needed (in cells with obstacles values)
+   update_frequency: 20.0 #Default: 5.0
+   publish_frequency: 5.0
+   #Width of costmap
+   width: 10.0 #Default: 10
+   #Height of costmap
+   height: 10.0 #Default:10
+   resolution: 0.05
+   #Deprecated
+   #static_map: false
+   #If set to false then the local costmap will be built from the static map and 
+   #not the sensor's readings
+   rolling_window: true 
+
+   #plugins:
+   #- {name: obstacles_layer, type: "costmap_2d::ObstacleLayer"}
+   #- {name: inflater_layer, type: "costmap_2d::InflationLayer"}

@@ -1,0 +1,26 @@
+global_costmap:
+   #Default is map, no need to specify again
+   global_frame: map #Since noetic no need to add the / at the beginning of the frame
+   #Default is base_link, no need to specify again
+   robot_base_frame: base_link
+
+   #Only used in local_costmap
+   update_frequency: 20.0
+   publish_frequency: 5.0
+   width: 40.0
+   height: 40.0
+   resolution: 0.05
+   origin_x: -20.0
+   origin_y: -20.0
+
+   #Deprecated
+   #static_map: true
+   #Default is false
+   rolling_window: false 
+
+   #Normally, just two layers are used in global_costmaps
+   #Jackal course uses 3
+   plugins:
+   - {name: static_layer, type: "costmap_2d::StaticLayer"}
+   - {name: obstacles_layer, type: "costmap_2d::ObstacleLayer"}
+   - {name: inflater_layer, type: "costmap_2d::InflationLayer"}

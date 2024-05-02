@@ -1,0 +1,98 @@
+#Global planner sends the complete path to the goal to the local planner 
+#Local planner executes one by one segments of the global plan 
+#Besides from the gloal plan (path) the local planner also needs a map
+#Local planner works with robot sensors (odometry and laser) so it can create a collision free local plan
+#This means that if a new obstacle that wasn't in the original static map appear the 
+#local planner detects it and modifies the plan to prevent collisions but still reach the goal
+TrajectoryPlannerROS:
+  ## Robot Configuration Parameters
+  #The x axis acceleration limit in m/sec2
+  acc_lim_x: 10.0 #Default: 2.5 (0 - 20 range)
+  #The y axis acceleration limit in m/sec2
+  #acc_lim_y: 10.0 #Default: 2.5 (0 - 20 range)
+  #The rotational acceleration limit in radians/sec2
+  acc_lim_theta: 20.0 #Default: 3.2 (0 - 20 range)
+
+  #Maximum forward (in x axis) velocity for robot in m/s
+  max_vel_x: 0.5 #Default: 0.5 (0 - 20 range)
+  #Minimum forward (in x axis) velocity for robot in m/s
+  #Must be high enough to overcome friction
+  min_vel_x: 0.1 #Default: 0.1 (0 - 20 range)
+
+  #Maximum rotation velocity for robot base in rad/s
+  max_vel_theta: 1.57 #Default: 1.0 (0 - 20 range)
+  #Minimum rotation velocity for robot base in rad/s
+  min_vel_theta: -1.57 #Default: -1.0 (-20 - 0 range)
+  #Minimum rotational velocity for base while performing in-place rotations in rad/s
+  min_in_place_vel_theta: 0.314 #Default: 0.4 (0 - 20 range)
+
+  #When robot gets stuck, an escape velocity means the robot will go backwards 
+  #hence the velocity must be negative so the robot can go away from the obstacle
+  escape_vel: -0.5 #Default: -0.1
+  #Wheter or not to use a differential robot (false is non-holonomic = differential)
+  holonomic_robot: false #Default: true
+
+  ## Forward Simulation Parameters
+  #Amount of time in seconds to forward-simulate trajectories
+  #The red line (local plan) will be longer as this number increases
+  #But will consume more computer power
+  sim_time: 2.0 #Default: 1.0 (0 - 10 range)
+  #Step size in meters to take between points on a given trayectory
+  sim_granularity: 0.02 #Default: 0.025 (0 - 5 range)
+  #Step size in radians to take between angular samples on the trajectory
+  angular_sim_granularity: 0.02 # Default: 0.025 (0 - 1.57 range)
+
+  ## Trajectory scoring parameters
+  # Whether the gdist_scale and pdist_scale parameters should assume that goal_distance and path_distance are expressed in units of meters or cells. Cells are assumed by default 
+  meter_scoring: true #Default: false (cells)
+  #Deprecated
+  #pdist_scale: 0.75  
+  #Weighting for how much the robot should try to stay close to the path generated
+  path_distance_bias: 0.75 #Default: 0.6 (0 - 5 range)
+  #Deprecated
+  #gdist_scale: 1.0 #Default: 1.0
+  #Weighting for how much the robot should try to reach the local goal
+  #Also controls speed
+  goal_distance_bias: 1.0 #Default: 0.8 (0 - 5 range) 
+  #The weighting for how much the controller should attempt to avoid obstacles
+  occdist_scale: 0.1 #Default: 0.01
+  #How far to look ahead in meters diferentiating between different rotational velocities
+  heading_lookahead: 0.325 #Default: 0.325
+  #Whether to score based on the robot's heading to the path or its distance from the path. default false  
+  heading_scoring: true #Default: false
+  #How far to look ahead in time in seconds along the simulated trajectory when using heading scoring (double, default: 0.8)
+  heading_scoring_timestep: 0.8 #Default: 0.8
+  #Whether to use the Dynamic Window Approach (DWA) or whether to use Trajectory Rollout
+  dwa: true #Default: true
+  #If true a topic <name>/cost_cloud will be enabled with a sensor_msg/PointCloud2 message with the 
+  #costgrid planner data
+  publish_cost_grid_pc: true #Default: false
+  #Used by cost_cloud topic, must be same as with local costmap frame 
+  #global_frame_id: odom #Default: odom
+  #If true allow simple_attraction instead of intelligent cost propagation
+  simple_attractor: false
+
+  ## Oscillation Prevention Parameters
+  #How far the robot must travel in meters before oscillation flags are reset
+  oscillation_reset_dist: 0.05 #Default: 0.05 
+
+  ## Forward Simulation Parameters 2
+  #Number of samples to use when exploring x velocity space
+  vx_samples: 6 #Default: 3 
+  #Number of samples to use when exploring theta velocity space
+  vtheta_samples: 20 #Default: 20
+  #If declared in move_base no need to redeclare here
+  #controller_frequency: 20 #Default: 20  
+
+  ## Goal Tolerance Parameters
+  #Controller tolerance in yaw/rotation when achieving its goal (radians)
+  yaw_goal_tolerance: 0.157 #Default: 0.05 
+  #Controller tolerance in x and y when achieving its goal (meters)
+  xy_goal_tolerance: 0.25 #Default: 0.10 
+  #If true, then the robot will rotate in place once it reaches its goal and might
+  #go out of the goal tolerance
+  latch_xy_goal_tolerance: false #Default: false
+
+  ##Global Plan Parameters
+  #Drops plan points after the robot passed them (1 meter away) to save computational resources
+  #prune_plan: true #Default: true

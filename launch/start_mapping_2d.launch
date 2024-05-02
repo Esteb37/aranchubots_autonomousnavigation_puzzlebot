@@ -1,0 +1,8 @@
+<!-- Launch ROS navigation stack to start mapping our environment -->
+<launch>
+    <!--- Run gmapping -->
+    <include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/include/nav_stack/gmapping.launch" />
+
+    <!--- Run Move Base -->
+    <include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/include/nav_stack/odom_navigation_2d.launch" />
+</launch>

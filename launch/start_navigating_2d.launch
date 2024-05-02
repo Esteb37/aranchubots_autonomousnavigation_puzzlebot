@@ -1,0 +1,14 @@
+<!-- Launch ROS navigation stack to start navigating using the previously created map -->
+<launch>
+
+    <!-- Run the map server -->
+    <arg name="map_file" default="$(find aranchubots_autonomousnavigation_puzzlebot)/maps/mymap.yaml"/>
+    <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
+    
+    <!--- Run AMCL -->
+    <include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/include/nav_stack/amcl.launch"/>
+    
+    <!--- Run Move Base -->
+    <include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/include/nav_stack/with_map_move_base_2d.launch"/>
+
+</launch>

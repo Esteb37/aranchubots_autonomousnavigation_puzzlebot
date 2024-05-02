@@ -1,0 +1,19 @@
+#Calculates a safe path to move the robot from initial to goal position
+#Works with a costmap (different than the one provided by map_server)
+#Costmap knows which places are safe for the robot to move through in a grid of cells representation
+#Global costmap (the one used by global planner) is created by static map (one from map server)
+#Global costmap has already obstacles inflated for safety and more characteristics
+NavfnROS:
+  #Allow to create plans that go through unknown space
+  allow_unknown: true #Default behaivor is true, no need to repeat 
+  #If voxel or obstacle layer are used set track_unknown_space param to true
+  #or all the unknown space will be converted to free space
+  track_unknown_space: true
+  default_tolerance: 0.1 #Tolerance for reaching the goal. It will try to crete a plan
+  #that makes the robot be as closest as possible to the goal, without exceding the tolerance
+  #To restrict the planner to a smaller window than the whole costmap 
+  #saves computer resources when dealing with large maps
+  planner_window_x: 0.0 
+  planner_window_y: 0.0
+  #Specify to visualize or not the navfn area via a PointCloud2
+  visualize_potential: false

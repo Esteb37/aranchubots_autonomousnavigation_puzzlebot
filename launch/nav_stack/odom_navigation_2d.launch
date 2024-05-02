@@ -1,0 +1,25 @@
+<launch>
+    <!-- Launch move_base node -->
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+
+        <rosparam file="$(find aranchubots_autonomousnavigation_puzzlebot)/params/costmap_common_params_2d.yaml" command="load" ns="global_costmap" />
+        <rosparam file="$(find aranchubots_autonomousnavigation_puzzlebot)/params/costmap_common_params_2d.yaml" command="load" ns="local_costmap" />
+
+        <rosparam file="$(find aranchubots_autonomousnavigation_puzzlebot)/params/odom_nav_params/global_costmap_params.yaml" command="load" />
+        <rosparam file="$(find aranchubots_autonomousnavigation_puzzlebot)/params/odom_nav_params/local_costmap_params.yaml" command="load" />
+
+        <rosparam file="$(find aranchubots_autonomousnavigation_puzzlebot)/params/planner_params/local_planner_params.yaml" command="load" />
+        <rosparam file="$(find aranchubots_autonomousnavigation_puzzlebot)/params/planner_params/global_planner_params.yaml" command="load" />
+        <rosparam file="$(find aranchubots_autonomousnavigation_puzzlebot)/params/move_base_params.yaml" command="load" />
+
+        <param name="base_global_planner" type="string" value="navfn/NavfnROS" />
+        <param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS"/>
+
+        <!-- Required for sensor fusion (EKF) funcionality.
+        The amcl+imu odom fused data is found in odometry/filtered topic -->
+        <!--<remap from="odom" to="odometry/filtered" />-->
+        <!-- Required for moving the robot using the differential controller -->
+        <remap from="cmd_vel" to="jackal_velocity_controller/cmd_vel" />
+    </node>
+
+</launch>

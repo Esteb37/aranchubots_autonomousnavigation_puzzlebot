@@ -1,0 +1,24 @@
+#Shutdown costmaps when the move_base node is inactive
+shutdown_costmaps: false #Default behaivor is false, no need to specify again
+
+#Rate at which to run control loop and send cmd_vel topic commands
+controller_frequency: 20.0 #Default behaivor is 20, no need to specify again
+#How long can the controller wait inactive before attempting space-clearing operations
+controller_patience: 15.0 #Default behaivor is 15, no need to specify again
+
+#Rate at which to run the global planning loop
+planner_frequency: 20.0 #Test default behaivor -> 0 ***
+#How long can the controller wait without receiving a valid plan before attempting space-clearing operations
+planner_patience: 5.0 #Default 15
+
+#Oscillation means that the robot is not moving forward towards a goal
+#It's rather moving in place without like when we anxiously wait in line
+#How long to perform oscillation before executing recovery behaivors
+#0.0 means wait forever
+oscillation_timeout: 0.0 #Default behaivor is 0.0, no need to specify again
+#How many meters must the robot move to not be considered oscillating
+oscillation_distance: 0.5 #Default behaivor is 0.5, no need to specify again
+
+#Wheter or not to enable recovery and roation behaivors
+recovery_behaviour_enabled: true #Default behaivor is true, no need to specify again
+clearing_rotation_allowed: true #Default behaivor is true, no need to specify again
