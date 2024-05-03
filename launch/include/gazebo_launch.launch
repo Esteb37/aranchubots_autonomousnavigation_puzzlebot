@@ -4,7 +4,7 @@
   <arg name="use_sim_time" default="true" />
   <arg name="gui" default="true" />
   <arg name="headless" default="false" />
- 
+
   <arg name="world_name" default="$(find aranchubots_autonomousnavigation_puzzlebot)/worlds/first_world.world"/>
   <arg name="robot_configuration" default="complete" />
 
