@@ -9,6 +9,8 @@
     creating the map of the environment) -->
     <include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/include/rviz/rviz_launch_2d.launch"/>
 
+    <include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/robot/spawner2d.launch"/>
+
     <!-- Launching Rviz with navigation visualization -->
     <!-- include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/include/rviz/rviz_launch_nav_2d.launch"/--> 
 
