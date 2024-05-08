@@ -6,9 +6,9 @@
     <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
     
     <!--- Run AMCL -->
-    <include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/include/nav_stack/amcl.launch"/>
+    <include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/nav_stack/amcl.launch"/>
     
     <!--- Run Move Base -->
-    <include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/include/nav_stack/with_map_move_base_2d.launch"/>
+    <include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/nav_stack/with_map_move_base_2d.launch"/>
 
 </launch>
