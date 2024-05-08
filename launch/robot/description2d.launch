@@ -4,9 +4,9 @@
   <arg name="config" default="base" />
 
   <param name="robot_description" command="$(find aranchubots_autonomousnavigation_puzzlebot)/urdf/puzzlebot_jetson_ed_urdf.urdf"/>
-    <arg name = "x" default = "0"/>
-    <arg name = "y" default = "0"/>
-    <arg name = "z" default = "0"/>
+  <arg name = "x" default = "0"/>
+  <arg name = "y" default = "0"/>
+  <arg name = "z" default = "0"/>
 
   <!-- Publish TF static transforms found in xacro/urdf file -->
   <!-- If more than 1 robot was spawned a namespace must be added here to 

@@ -16,10 +16,10 @@
     <!-- Launching ROS Navigation Stack nodes -->
     <!-- Launch gmapping node and move base to generate map of environment -->
     <!-- This is only done one time to generate the map, it should be commented once the map is obtained -->
-    
-    <!--<include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/include/start_mapping_2d.launch"/>-->
+
+    <!--<include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/start_mapping_2d.launch"/>-->
 
     <!-- Launch map, localization and navigation -->
-    <!--include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/include/start_navigating_2d.launch"/-->
+    <!--include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/start_navigating_2d.launch"/-->
 
 </launch>
