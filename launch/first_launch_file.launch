@@ -5,8 +5,7 @@
     <!-- Launching gazebo maze simulation -->
     <include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/include/gazebo_launch.launch"/> 
 
-    <!-- Launching Rviz with mapping configuration (only uncomment when 
-    creating the map of the environment) -->
+    <!-- Launching Rviz with mapping configuration (only uncomment when creating the map of the environment) -->
     <include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/include/rviz/rviz_launch_2d.launch"/>
 
     <include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/robot/spawner2d.launch"/>
@@ -16,8 +15,8 @@
 
     <!-- Launching ROS Navigation Stack nodes -->
     <!-- Launch gmapping node and move base to generate map of environment -->
-    <!-- This is only done one time to generate the map, it should be commented 
-    once the map is obtained -->
+    <!-- This is only done one time to generate the map, it should be commented once the map is obtained -->
+    
     <!--<include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/include/start_mapping_2d.launch"/>-->
 
     <!-- Launch map, localization and navigation -->

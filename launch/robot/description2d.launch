@@ -3,16 +3,15 @@
   <!-- Type of Jackal simulation configuration you need -->
   <arg name="config" default="base" />
 
-  <param name="robot_description"
-         command="$(find aranchubots_autonomousnavigation_puzzlebot)/src/env_run
-                    $(find aranchubots_autonomousnavigation_puzzlebot)/urdf/configs/$(arg config)
-                    $(find xacro)/xacro $(find aranchubots_autonomousnavigation_puzzlebot)/urdf/jackal.urdf.xacro
-                    " />
+  <param name="robot_description" command="$(find aranchubots_autonomousnavigation_puzzlebot)/urdf/puzzlebot_jetson_ed_urdf.urdf"/>
+    <arg name = "x" default = "0"/>
+    <arg name = "y" default = "0"/>
+    <arg name = "z" default = "0"/>
 
   <!-- Publish TF static transforms found in xacro/urdf file -->
   <!-- If more than 1 robot was spawned a namespace must be added here to 
   differentiate each robot TFs. To do so, just add a remap inside the node
   declaration -->
-  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" 
-        respawn="false" output="screen"/>
+  <node name="robot_state_publisher" pkg="gazebo_ros" type="spawn_model" 
+        respawn="false" output="screen" args="-urdf -param robot_description -model puzzlebot -x $(arg x) -y $(arg y) -z $(arg z)"/>
 </launch>
