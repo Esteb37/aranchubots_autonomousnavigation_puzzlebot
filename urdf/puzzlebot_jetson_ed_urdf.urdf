@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
-<robot name="Puzzlebot Jetson-Lidar Ed.">
-
+<robot name="Aranchubot">
 
 <!-- Dummy link to fiz robot chassis -->
   <link name="base_link">
@@ -85,10 +84,5 @@
             </geometry>
         </visual>
     </link>
-
-
-
-<!-- FINISH THE URDF-->
-
 
 </robot>
