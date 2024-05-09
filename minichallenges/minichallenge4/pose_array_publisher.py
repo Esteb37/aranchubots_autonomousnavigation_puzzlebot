@@ -15,7 +15,7 @@ class PublishPoseArray():
         # Create a PoseArray message
 
         # Cargar archivo csv/xlsx con los datos obtenidos
-        data = pd.read_csv('/home/naomin/catkin_ws/src/aranchubots_autonomousnavigation_puzzlebot/minichallenges/minichallenge4/mediciones_aranchubots.csv')
+        data = pd.read_csv('/home/naomin/catkin_ws/src/aranchubots_autonomousnavigation_puzzlebot/minichallenges/minichallenge4/mediciones_final.csv')
 
         pose_array_msg = PoseArray()
         # Wait for a valid simulated time 
@@ -29,19 +29,13 @@ class PublishPoseArray():
             # NOTE: this is just an example  
             # you will have to fill the pose information (x,y,theta) with the  
             # results from your different experiments.  
-            """
-            EXAMPLE
-            pose.position.x = 1+np.random.normal(0,0.3,1) # mean 0 and standard deviation 0.3 
-            pose.position.y = np.random.normal(0,0.1,1) # mean 0 and standard deviation 0.1 
-            pose.position.z = 0 
-            """
-            # OUR DATA
+
             pose.position.x = data['X'].values
-            print(pose.position.x)
             pose.position.y = data['Y'].values
             pose.position.z = data['Z'].values
 
             theta = data['Theta'].values
+            print(theta)
 
             quat = quaternion_from_euler(0.0, 0.0, theta) 
             pose.orientation.x = quat[0] 
