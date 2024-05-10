@@ -1,13 +1,13 @@
 <!-- Robot spawner launch file -->
 <launch>
     <!-- Read URDF/XACRO files, load robot params and publish robot state information (fixed TF transforms) -->
-    <include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/include/robot/description2d.launch"/>
+    <include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/robot/description2d.launch"/>
 
     <!-- Spawn Jackal -->
     <!-- Original was 0,0,1 (x, y, z). This was adjusted so that the robot spawns
     centered in the maze. However, this doesn't affect RVIZ perception of where 
     it thinks the robot is. It keeps on appearing in the same place in RVIZ -->
     <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model"
-	      args="-urdf -model jackal -param robot_description -x 0.1 -y 0.3 -z 1.0">
+	      args="-urdf -model Aranchubot -param robot_description -x 0.1 -y 0.3 -z 1.0">
     </node>
 </launch>
