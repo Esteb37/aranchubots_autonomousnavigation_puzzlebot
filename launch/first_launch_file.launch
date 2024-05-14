@@ -23,6 +23,7 @@
     <!-- This is only done one time to generate the map, it should be commented
     once the map is obtained -->
     <include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/include/start_mapping_2d.launch"/>
+
     <!-- This is only done one time to generate the map, it should be commented once the map is obtained -->
     <!-- Launch map, localization and navigation -->
     <!--include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/include/start_navigating_2d.launch"/-->
