@@ -20,7 +20,7 @@ meter_scoring: true
 #Increased for protection against obstacles
 #Contour of mobile base
 footprint: [[-0.1,-0.1],[-0.1,0.1],[0.1,0.1],[0.1,-0.1]]
-footprint_padding: 0.00
+footprint_padding: 0.01
 
 #Could group layers here from global and local costmaps.
 #But the only plugin we can group is inflater layer
