@@ -10,7 +10,7 @@
     <!-- Launching Rviz with mapping configuration (only uncomment when creating the map of the environment) -->
     <include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/include/rviz/rviz_launch_2d.launch"/>
 
-    <include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/robot/spawner2d.launch"/>
+    <include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/include/robot/spawner2d.launch"/>
 
     <!-- Launching Rviz with navigation visualization -->
     <!-- include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/include/rviz/rviz_launch_nav_2d.launch"/-->
@@ -21,10 +21,7 @@
     once the map is obtained -->
     <include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/include/start_mapping_2d.launch"/>
     <!-- This is only done one time to generate the map, it should be commented once the map is obtained -->
-
-    <include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/start_mapping_2d.launch"/>
-
     <!-- Launch map, localization and navigation -->
-    <!--include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/start_navigating_2d.launch"/-->
+    <!--include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/include/start_navigating_2d.launch"/-->
 
 </launch>
