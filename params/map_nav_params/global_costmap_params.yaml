@@ -9,14 +9,14 @@ global_costmap:
    publish_frequency: 5.0
    width: 40.0
    height: 40.0
-   resolution: 0.05
-   origin_x: -20.0
-   origin_y: -20.0
+   resolution: 0.02
+   origin_x: -9.9
+   origin_y: -10.3
 
    #Deprecated
    #static_map: true
    #Default is false
-   rolling_window: false 
+   rolling_window: false
 
    #Normally, just two layers are used in global_costmaps
    #Jackal course uses 3

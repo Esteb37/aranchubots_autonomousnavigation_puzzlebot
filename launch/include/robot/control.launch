@@ -4,6 +4,8 @@
 
   <node name="puzzlebot_controller" pkg="aranchubots_autonomousnavigation_puzzlebot" type="aranchubots_autonomousnavigation_puzzlebot_node"/>
 
+  <node name="odom" pkg="aranchubots_autonomousnavigation_puzzlebot" type="odom.py"/>
+
   <include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/include/robot/puzzlebot_control.launch"/>"
 
 
