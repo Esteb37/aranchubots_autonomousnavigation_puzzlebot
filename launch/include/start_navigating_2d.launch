@@ -2,7 +2,7 @@
 <launch>
 
     <!-- Run the map server -->
-    <arg name="map_file" default="$(find aranchubots_autonomousnavigation_puzzlebot)/maps/mymap.yaml"/>
+    <arg name="map_file" default="$(find aranchubots_autonomousnavigation_puzzlebot)/maps/map.yaml"/>
     <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
 
     <!--- Run AMCL -->

@@ -183,33 +183,17 @@ Visualization Manager:
             All Enabled: true
             base_link:
               Value: true
-            chassis_link:
+            chassis:
               Value: true
-            fenders_link:
+            base_laser_link:
               Value: true
-            front_laser:
+            left_wheel:
               Value: true
-            front_laser_mount:
+            right_wheel:
               Value: true
-            front_left_wheel_link:
-              Value: true
-            front_mount:
-              Value: true
-            front_right_wheel_link:
-              Value: true
-            imu_link:
-              Value: true
-            mid_mount:
-              Value: true
-            navsat_link:
+            camera:
               Value: true
             odom:
-              Value: true
-            rear_left_wheel_link:
-              Value: true
-            rear_mount:
-              Value: true
-            rear_right_wheel_link:
               Value: true
           Marker Alpha: 1
           Marker Scale: 1
@@ -234,68 +218,32 @@ Visualization Manager:
             Expand Joint Details: false
             Expand Link Details: false
             Expand Tree: false
-            Link Tree Style: ""
+            Link Tree Style: Links in Alphabetic Order
+            base_laser_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
             base_link:
               Alpha: 1
               Show Axes: false
               Show Trail: false
-            chassis_link:
+            camera:
               Alpha: 1
               Show Axes: false
               Show Trail: false
               Value: true
-            fenders_link:
+            chassis:
               Alpha: 1
               Show Axes: false
               Show Trail: false
               Value: true
-            front_laser:
+            left_wheel:
               Alpha: 1
               Show Axes: false
               Show Trail: false
               Value: true
-            front_laser_mount:
-              Alpha: 1
-              Show Axes: false
-              Show Trail: false
-              Value: true
-            front_left_wheel_link:
-              Alpha: 1
-              Show Axes: false
-              Show Trail: false
-              Value: true
-            front_mount:
-              Alpha: 1
-              Show Axes: false
-              Show Trail: false
-            front_right_wheel_link:
-              Alpha: 1
-              Show Axes: false
-              Show Trail: false
-              Value: true
-            imu_link:
-              Alpha: 1
-              Show Axes: false
-              Show Trail: false
-            mid_mount:
-              Alpha: 1
-              Show Axes: false
-              Show Trail: false
-            navsat_link:
-              Alpha: 1
-              Show Axes: false
-              Show Trail: false
-              Value: true
-            rear_left_wheel_link:
-              Alpha: 1
-              Show Axes: false
-              Show Trail: false
-              Value: true
-            rear_mount:
-              Alpha: 1
-              Show Axes: false
-              Show Trail: false
-            rear_right_wheel_link:
+            right_wheel:
               Alpha: 1
               Show Axes: false
               Show Trail: false
