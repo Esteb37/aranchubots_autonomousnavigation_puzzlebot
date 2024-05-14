@@ -1,36 +1,15 @@
 <!-- Control launch file -->
 <launch>
 
-  <!-- Load the control.yaml file to ROS parameters so that they can be enabled beneath -->
-  <rosparam command="load" file="$(find aranchubots_autonomousnavigation_puzzlebot)/configs/control.yaml" />
 
-  <!-- Enable ROS controllers 
-  Jackal joint publisher for non-fixed TF transforms 
-  Jackal velocity controller for differential drive controller -->
-  <!-- If more than 1 robot was spawned a namespace must be added here to 
-  differentiate each robot TFs. To do so, just add the ns attribute to the node.
-  And also, add the namespace to the control.yaml file. It must appear in both -->
-  <node name="controller_spawner" pkg="controller_manager" type="spawner"
-        args="jackal_joint_publisher jackal_velocity_controller" />
+  <node name="puzzlebot_controller" pkg="aranchubots_autonomousnavigation_puzzlebot" type="aranchubots_autonomousnavigation_puzzlebot_node"/>
 
-  <!-- Sensors fusion to improve odometry against real life noise -->
-  <!--<node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization">
-      <rosparam command="load" file="$(find ros_stack_sim_jackal)/configs/robot_localization.yaml" />
-    </node>-->
+  <include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/include/robot/puzzlebot_control.launch"/>"
 
-  <!-- If no remap was done in the move_base node, a relay will be needed.
-  Because move_base publishes the velocity commands to the cmd_vel topic and 
-  to move the robot, those velocity commands must be published into the robot 
-  controller topic. Which in this case it's named as jackal_velocity_controller/cmd_vel.
-  That is user-defined in the control.yaml file.-->
-  <!-- The remap option was preferred because it consumes less resources 
-  than a relay -->
-  <!--<node pkg="topic_tools" type="relay" name="cmd_vel_relay" args="cmd_vel jackal_velocity_controller/cmd_vel"/>-->
 
   <!-- To be able to teleop my robot through RVIZ using interactive markers -->
-  <node pkg="interactive_marker_twist_server" type="marker_server" 
+  <node pkg="interactive_marker_twist_server" type="marker_server"
         name="twist_marker_server">
-    <!--<remap from="twist_marker_server/cmd_vel" to="cmd_vel"/>-->
-    <remap from="twist_marker_server/cmd_vel" to="jackal_velocity_controller/cmd_vel"/>
+    <remap from="twist_marker_server/cmd_vel" to="/cmd_vel"/>
   </node>
 </launch>

@@ -14,12 +14,6 @@
 
         <param name="base_global_planner" type="string" value="navfn/NavfnROS" />
         <param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS"/>
-
-        <!-- Required for sensor fusion (EKF) funcionality.
-        The amcl+imu odom fused data is found in odometry/filtered topic -->
-        <!--<remap from="odom" to="odometry/filtered" />-->
-        <!-- Required for moving the robot using the differential controller -->
-        <remap from="cmd_vel" to="jackal_velocity_controller/cmd_vel" />
     </node>
 
 </launch>

@@ -12,6 +12,9 @@
 
     <include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/include/robot/spawner2d.launch"/>
 
+	<include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/include/robot/control.launch"/>
+
+
     <!-- Launching Rviz with navigation visualization -->
     <!-- include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/include/rviz/rviz_launch_nav_2d.launch"/-->
 
