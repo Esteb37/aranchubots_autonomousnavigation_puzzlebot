@@ -9,7 +9,7 @@
       <collision name="collision">
         <geometry>
             <mesh>
-                <uri>model:///map_test/meshes/Mapa_pista_ADJIC v4.dae</uri>
+                <uri>model://map_test/meshes/Mapa_pista_ADJIC v4.dae</uri>
             </mesh>
         </geometry>
         <surface>
@@ -24,7 +24,7 @@
       <visual name="visual">
         <geometry>
             <mesh>
-                <uri>model:///map_test/meshes/Mapa_pista_ADJIC v4.dae</uri>
+                <uri>model://map_test/meshes/Mapa_pista_ADJIC v4.dae</uri>
             </mesh>
         </geometry>
         <material>
