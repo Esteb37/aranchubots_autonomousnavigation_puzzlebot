@@ -9,10 +9,17 @@
 
 ## Use instructions:
 
-"Explanation"
-
-1. Code example
+In order to run this code, please follow the next instructions:
+1. Clone the repository in a shell window.
 ```
-aranchubots.py
+git clone https://github.com/Esteb37/aranchubots_autonomousnavigation_puzzlebot.git
+```
+2. Compile the ros package with
+```
+catkin_make
+```
+3. Run the launch file
+```
+roslaunch aranchubots_autonomousnavigation_puzzlebot first_launch_file.launch
 ```
 
