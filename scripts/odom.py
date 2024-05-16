@@ -102,7 +102,7 @@ class PuzzlebotLocClass():
 
 
         self.v = self.r*(self.wr + self.wl)/2
-        self.w = -self.r*(self.wr - self.wl)/self.L
+        self.w = self.r*(self.wr - self.wl)/self.L
         self.mu[0] = self.mu[0] + self.v*np.cos(self.mu[2])*self.dt
         self.mu[1] = self.mu[1] + self.v*np.sin(self.mu[2])*self.dt
         self.theta_ant = self.mu[2]

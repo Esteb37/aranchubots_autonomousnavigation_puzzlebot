@@ -7,9 +7,9 @@ global_costmap:
    #Only used in local_costmap
    update_frequency: 20.0
    publish_frequency: 5.0
-   width: 40.0
-   height: 40.0
-   resolution: 0.02
+   width: 5.0
+   height: 5.0
+   resolution: 0.01
    origin_x: -9.9
    origin_y: -10.3
 

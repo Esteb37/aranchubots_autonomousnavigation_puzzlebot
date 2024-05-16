@@ -7,9 +7,9 @@ z_voxels: 2
 #Set threshold distance (in meters).
 #If something is above the threshold it won't appear in the map.
 #This helps save computer resources
-obstacle_range: 0.3 #So costmap will only be updated with obstacles that are within 2.5m from the robot
+obstacle_range: 2.5 #So costmap will only be updated with obstacles that are within 2.5m from the robot
 
-raytrace_range: 1.0 #Related to freespace. If no obstacle is detected the area within
+raytrace_range: 3.0 #Related to freespace. If no obstacle is detected the area within
 #3m from the robot will be marked as free space
 
 publish_voxel_map: true
@@ -19,8 +19,8 @@ meter_scoring: true
 #footprint: [[-0.21, -0.165], [-0.21, 0.165], [0.21, 0.165], [0.21, -0.165]]
 #Increased for protection against obstacles
 #Contour of mobile base
-footprint: [[-0.1,-0.1],[-0.1,0.1],[0.1,0.1],[0.1,-0.1]]
-footprint_padding: 0.01
+footprint: [[-0.05,-0.05],[-0.05,0.05],[0.05,0.05],[0.05,-0.05]]
+footprint_padding: 0.0
 
 #Could group layers here from global and local costmaps.
 #But the only plugin we can group is inflater layer
@@ -34,12 +34,12 @@ plugins:
 #In charge of marking and clearing operations
 obstacles_layer:
   observation_sources: scan #Topics names for sensors like LiDAR
-  scan: {sensor_frame: base_laser_link, data_type: LaserScan, topic: scan, marking: true, clearing: true, min_obstacle_height: -2.0, max_obstacle_height: 2.0, obstacle_range: 2.5, raytrace_range: 3.0}
+  scan: {sensor_frame: base_laser_link, data_type: LaserScan, topic: scan, marking: true, clearing: true, min_obstacle_height: -2.0, max_obstacle_height: 2.0, obstacle_range: 2.0, raytrace_range: 3.0}
 
 #In charge of inflating (blue color in RVIZ) each cell with an obstacle
 inflater_layer:
   #Increased for better detecting obstacles
-  inflation_radius: 0.001 #Default: 0.55
+  inflation_radius: 0.1 #Default: 0.55
   #Scaling factor to apply cost values during inflation
   #cost_scaling_factor: 10.0 #Default: 10.0
 

@@ -7,11 +7,11 @@
 TrajectoryPlannerROS:
   ## Robot Configuration Parameters
   #The x axis acceleration limit in m/sec2
-  acc_lim_x: 2.0 #Default: 2.5 (0 - 20 range)
+  acc_lim_x: 10.0 #Default: 2.5 (0 - 20 range)
   #The y axis acceleration limit in m/sec2
   #acc_lim_y: 10.0 #Default: 2.5 (0 - 20 range)
   #The rotational acceleration limit in radians/sec2
-  acc_lim_theta: 2.0 #Default: 3.2 (0 - 20 range)
+  acc_lim_theta: 20.0 #Default: 3.2 (0 - 20 range)
 
   #Maximum forward (in x axis) velocity for robot in m/s
   max_vel_x: 0.15 #Default: 0.5 (0 - 20 range)
@@ -20,11 +20,11 @@ TrajectoryPlannerROS:
   min_vel_x: 0.12 #Default: 0.1 (0 - 20 range)
 
   #Maximum rotation velocity for robot base in rad/s
-  max_vel_theta: 1.57 #Default: 1.0 (0 - 20 range)
+  max_vel_theta: 0.3 #Default: 1.0 (0 - 20 range)
   #Minimum rotation velocity for robot base in rad/s
-  min_vel_theta: -1.57 #Default: -1.0 (-20 - 0 range)
+  min_vel_theta: -0.3 #Default: -1.0 (-20 - 0 range)
   #Minimum rotational velocity for base while performing in-place rotations in rad/s
-  min_in_place_vel_theta: 0.314 #Default: 0.4 (0 - 20 range)
+  min_in_place_vel_theta: 0.3 #Default: 0.4 (0 - 20 range)
 
   #When robot gets stuck, an escape velocity means the robot will go backwards
   #hence the velocity must be negative so the robot can go away from the obstacle
@@ -48,18 +48,18 @@ TrajectoryPlannerROS:
   #Deprecated
   #pdist_scale: 0.75
   #Weighting for how much the robot should try to stay close to the path generated
-  path_distance_bias: 0.75 #Default: 0.6 (0 - 5 range)
+  path_distance_bias: 4.0 #Default: 0.6 (0 - 5 range)
   #Deprecated
   #gdist_scale: 1.0 #Default: 1.0
   #Weighting for how much the robot should try to reach the local goal
   #Also controls speed
   goal_distance_bias: 1.0 #Default: 0.8 (0 - 5 range)
   #The weighting for how much the controller should attempt to avoid obstacles
-  occdist_scale: 1.0 #Default: 0.01
+  occdist_scale: 0.00 #Default: 0.01
   #How far to look ahead in meters diferentiating between different rotational velocities
-  heading_lookahead: 0.325 #Default: 0.325
+  heading_lookahead: 0.01 #Default: 0.325
   #Whether to score based on the robot's heading to the path or its distance from the path. default false
-  heading_scoring: true #Default: false
+  heading_scoring: false #Default: false
   #How far to look ahead in time in seconds along the simulated trajectory when using heading scoring (double, default: 0.8)
   heading_scoring_timestep: 0.8 #Default: 0.8
   #Whether to use the Dynamic Window Approach (DWA) or whether to use Trajectory Rollout
@@ -88,7 +88,7 @@ TrajectoryPlannerROS:
   #Controller tolerance in yaw/rotation when achieving its goal (radians)
   yaw_goal_tolerance: 0.157 #Default: 0.05
   #Controller tolerance in x and y when achieving its goal (meters)
-  xy_goal_tolerance: 0.25 #Default: 0.10
+  xy_goal_tolerance: 0.03 #Default: 0.10
   #If true, then the robot will rotate in place once it reaches its goal and might
   #go out of the goal tolerance
   latch_xy_goal_tolerance: false #Default: false

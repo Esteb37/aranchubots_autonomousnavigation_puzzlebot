@@ -16,10 +16,10 @@ local_costmap:
    update_frequency: 20.0 #Default: 5.0
    publish_frequency: 5.0
    #Width of costmap
-   width: 10.0 #Default: 10
+   width: 5.0 #Default: 10
    #Height of costmap
-   height: 10.0 #Default:10
-   resolution: 0.02
+   height: 5.0 #Default:10
+   resolution: 0.01
    #Deprecated
    #static_map: false
    #If set to false then the local costmap will be built from the static map and
