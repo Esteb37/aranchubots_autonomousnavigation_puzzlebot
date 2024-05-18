@@ -9,7 +9,7 @@ NavfnROS:
   #If voxel or obstacle layer are used set track_unknown_space param to true
   #or all the unknown space will be converted to free space
   track_unknown_space: true
-  default_tolerance: 0.01 #Tolerance for reaching the goal. It will try to crete a plan
+  default_tolerance: 0.1 #Tolerance for reaching the goal. It will try to crete a plan
   #that makes the robot be as closest as possible to the goal, without exceding the tolerance
   #To restrict the planner to a smaller window than the whole costmap
   #saves computer resources when dealing with large maps

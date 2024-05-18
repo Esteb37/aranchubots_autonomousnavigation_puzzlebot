@@ -7,7 +7,7 @@
     <pose>0 0 0 0 0 0</pose>
     <link name="walls">
       <collision name="collision">
-        <geometry>
+        <geometry> 
             <mesh>
                 <uri>model://map_test/meshes/Mapa_pista_ADJIC v4.dae</uri>
             </mesh>

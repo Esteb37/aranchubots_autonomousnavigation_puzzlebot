@@ -6,8 +6,9 @@ global_costmap:
   width: 4.0
   height: 4.0
   resolution: 0.01
-  origin_x: -9.9
-  origin_y: -10.3
+  origin_x: -0.1
+  origin_y: -1.85
+
   #Deprecated
   #static_map: true
   rolling_window: false
