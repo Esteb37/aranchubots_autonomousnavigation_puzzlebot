@@ -20,7 +20,7 @@ git clone https://github.com/Esteb37/aranchubots_autonomousnavigation_puzzlebot.
 ```
 catkin_make
 ```
-3. Run the launch file
+3. Run the launch file you would like to see, for example:
 ```
 roslaunch aranchubots_autonomousnavigation_puzzlebot first_launch_file.launch
 ```
