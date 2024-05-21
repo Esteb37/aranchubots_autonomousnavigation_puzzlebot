@@ -6,13 +6,13 @@
         <arg name="robot_name" default="puzzlebot_1"/>
         <arg name="robot_description_file" default="puzzlebot_jetson_lidar_ed_v1.xacro"/>
         <arg name="pos_x" default="0.0"/>
-        <arg name="pos_y" default="-1.1"/>
+        <arg name="pos_y" default="-1.23"/>
         <arg name="pos_theta" default="0.0"/>
 
 		<arg name="goal_x" default="1.45"/>
         <arg name="goal_y" default="1.2"/>
 
-		<arg name="eps" default="0.0"/>
+		<arg name="eps" default="0.2"/>
 
         <!-- Gazebo Parameters -->
         <arg name="world_name" default="$(find puzzlebot_gazebo)/worlds/obstacle_avoidance_1.world"/>
@@ -55,6 +55,7 @@
 			<param name="goal_x" value="$(arg goal_x)" />
 			<param name="goal_y" value="$(arg goal_y)" />
 			<param name="eps" value="$(arg eps)" />
+			<param name="is_one" value="true" />
 		</node>
 
 		<node type="rviz" name="rviz" pkg="rviz" args="-d $(find aranchubots_autonomousnavigation_puzzlebot)/rviz/bug0.rviz"/>

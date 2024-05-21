@@ -17,7 +17,8 @@ class AutonomousNav():
 		############ Variables ###############
 		self.x_target = rospy.get_param('/bug2/goal_x', 0) #x position of the goal
 		self.y_target = rospy.get_param('/bug2/goal_y', 0) #y position of the goal
-		eps = rospy.get_param('/bug2/eps', 0.1) #distance to the goal to switch to the next state
+		eps = rospy.get_param('/bug2/eps', 0.0) #distance to the goal to switch to the next state
+		self.is_one = rospy.get_param('/bug2/is_one', False)
 		clockwise = False
 
 		self.pose_x = 0.0
@@ -67,9 +68,8 @@ class AutonomousNav():
 
 		start_x = self.pose_x
 		start_y = self.pose_y
-
+		hits = 0
 		ray_trace = self.get_ray_trace([start_x, start_y], [self.x_target, self.y_target])
-
 		################ MAIN LOOP ################
 		while not rospy.is_shutdown():
 			theta_gtg = self.get_theta_gtg(self.x_target, self.y_target, self.pose_x, self.pose_y, self.pose_theta)
@@ -110,8 +110,12 @@ class AutonomousNav():
 
 				elif current_state == 'AvoidObstacle':
 					if self.distance_to_line([self.pose_x, self.pose_y], ray_trace) < 0.05 and self.progress() < abs(hit_distance - eps):
-						current_state = "GoToGoal"
-						print("Going to goal")
+						if not self.is_one or hits > 0:
+							current_state = "GoToGoal"
+							print("Going to goal")
+						else:
+							hits+=1
+							hit_distance = self.progress()
 					if self.at_goal():
 						print("At goal")
 						current_state = "Stop"
@@ -282,7 +286,7 @@ class AutonomousNav():
 		return v, w
 
 	def compute_fw_control(self, closest_angle, clockwise):
-		v = 0.2 # [m/s] Robot's linear velocity while avoiding obstacles
+		v = 0.17 if self.is_one else 0.2 # [m/s] Robot's linear velocity while avoiding obstacles
 		kAO = 2.8 # Proportional constant for the angular speed controller
 		closest_angle = self.normalize_angle(closest_angle)
 		if clockwise:
