@@ -8,7 +8,7 @@
             "includePath": [
                 "/home/estebanpadilla/xarm_ws/devel/include/**",
                 "/opt/ros/noetic/include/**",
-                "/home/estebanpadilla/catkin_ws/src/beginner_tutorials/include/**",
+                "/home/estebanpadilla/catkin_ws/src/aranchubots_autonomousnavigation_puzzlebot/include/**",
                 "/home/estebanpadilla/catkin_ws/src/puzzlebot_sim/include/**",
                 "/home/esteb37/catkin_ws/src/aranchubots_autonomousnavigation_puzzlebot/include",
                 "/home/estebanpadilla/xarm_ws/src/xarm_ros/xarm_api/include/**",
