@@ -11,6 +11,9 @@ from tf.transformations import euler_from_quaternion, quaternion_from_euler
 
 # This class will make the puzzlebot move to a given goal
 class AutonomousNav():
+
+	ANGLE_OFFSET = np.pi
+
 	def __init__(self):
 		rospy.on_shutdown(self.cleanup)
 
@@ -210,8 +213,6 @@ class AutonomousNav():
 			path.header.frame_id = "odom"
 			path.poses = []
 
-			rospy.loginfo(self.x_target)
-   			rospy.loginfo(self.y_target)
 			pose = PoseStamped()
 			pose.header.stamp = rospy.Time.now()
 			pose.header.frame_id = "odom"
@@ -251,7 +252,7 @@ class AutonomousNav():
 		# This function returns the closest object to the robot
 		# This functions receives a ROS LaserScan message and returns the distance and direction to the closest object
 		ranges = np.array(lidar_msg.ranges)
-		angle_min = lidar_msg.angle_min
+		angle_min = lidar_msg.angle_min + self.ANGLE_OFFSET
 		min_idx = np.argmin(ranges)
 		closest_range = ranges[min_idx]
 		closest_angle = angle_min + min_idx * lidar_msg.angle_increment

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import rospy
-from geometry_msgs.msg import Pose, PoseStamped
+from geometry_msgs.msg import Pose
+from visualization_msgs.msg import Marker
 from nav_msgs.msg import Odometry
 from std_msgs.msg import Float32
 from tf.transformations import quaternion_from_euler
@@ -27,22 +28,17 @@ class PuzzlebotLocClass():
 		rospy.Subscriber("/wl", Float32, self.wl_cb)
 		rospy.Subscriber("/wr", Float32, self.wr_cb)
 
-		self.x_target = rospy.get_param('/goal_x', 0) #x position of the goal
-		self.y_target = rospy.get_param('/goal_y', 0) #y position of the goal
-		goal = PoseStamped()
-		goal.header.frame_id = "odom"
-		goal.header.stamp = rospy.Time.now()
-		goal.pose.position.x = self.x_target
-		goal.pose.position.y = self.y_target
+		self.x_target = rospy.get_param('/odom_node/goal_x', 0) #x position of the goal
+		self.y_target = rospy.get_param('/odom_node/goal_y', 0) #y position of the goal
 
-		x_init = rospy.get_param('/pos_x', 0) #x position of the robot
-		y_init = rospy.get_param('/pos_y', 0)
-		theta_init = rospy.get_param('/pos_theta', 0)
+		x_init = rospy.get_param('/odom_node/pos_x', 0) #x position of the robot
+		y_init = rospy.get_param('/odom_node/pos_y', 0)
+		theta_init = rospy.get_param('/odom_node/pos_theta', 0)
 
 
 		# Publishers
 		odom_pub = rospy.Publisher('/odom', Odometry, queue_size=1)
-		goal_pub = rospy.Publisher('/goal', PoseStamped, queue_size=1)
+		goal_pub = rospy.Publisher('/goal', Marker, queue_size=1)
 
 
 		############ ROBOT CONSTANTS ################
@@ -97,8 +93,33 @@ class PuzzlebotLocClass():
 			self.sigma = (H.dot(self.sigma).dot(H.T)) + self.Qk
 
 			######## Publish the data #################
+
+
 			odom_pub.publish(self.odometry)
-			goal_pub.publish(goal)
+
+			marker_goal = Marker()
+			marker_goal.header.frame_id = "odom"
+			marker_goal.header.stamp = rospy.Time.now()
+			marker_goal.ns = "goal"
+			marker_goal.id = 0
+			marker_goal.type = Marker.CUBE
+			marker_goal.action = Marker.ADD
+			marker_goal.pose.position.x = self.x_target
+			marker_goal.pose.position.y = self.y_target
+			marker_goal.pose.position.z = 0
+			marker_goal.pose.orientation.x = 0.0
+			marker_goal.pose.orientation.y = 0.0
+			marker_goal.pose.orientation.z = 0.0
+			marker_goal.pose.orientation.w = 1.0
+			marker_goal.scale.x = 0.2
+			marker_goal.scale.y = 0.2
+			marker_goal.scale.z = 0.5
+			marker_goal.color.a = 1.0
+			marker_goal.color.r = 0.0
+			marker_goal.color.g = 1.0
+			marker_goal.color.b = 0.0
+
+			goal_pub.publish(marker_goal)
 			rate.sleep()
 
 

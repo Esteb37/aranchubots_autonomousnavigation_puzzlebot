@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Check if exactly one argument is provided
+if [ "$#" -ne 1 ]; then
+    echo "Usage: $0 <text_variable>"
+    exit 1
+fi
+
+# Assign the first argument to a variable
+TEXT_VARIABLE=$1
+
+# Example command using the variable
+# Replace `echo` with the desired command
+scp -r ~/catkin_ws/src/aranchubots_autonomousnavigation_puzzlebot/$TEXT_VARIABLE puzzlebot@10.42.0.1:~/catkin_ws/src/aranchubots_autonomousnavigation_puzzlebot

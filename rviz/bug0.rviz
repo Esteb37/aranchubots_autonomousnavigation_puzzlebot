@@ -9,10 +9,11 @@ Panels:
         - /Odometry1
         - /LaserScan1
         - /LaserScan1/Autocompute Value Bounds1
+        - /Pose1
         - /Pose2
-        - /Pose3
         - /Marker1
         - /Marker1/Namespaces1
+        - /Marker3
       Splitter Ratio: 0.5
     Tree Height: 549
   - Class: rviz/Selection
@@ -58,22 +59,6 @@ Visualization Manager:
       Plane Cell Count: 10
       Reference Frame: <Fixed Frame>
       Value: true
-    - Alpha: 1
-      Axes Length: 1
-      Axes Radius: 0.10000000149011612
-      Class: rviz/Pose
-      Color: 255; 25; 0
-      Enabled: true
-      Head Length: 0.30000001192092896
-      Head Radius: 0.10000000149011612
-      Name: Pose
-      Queue Size: 10
-      Shaft Length: 1
-      Shaft Radius: 0.05000000074505806
-      Shape: Arrow
-      Topic: /goal
-      Unreliable: false
-      Value: true
     - Angle Tolerance: 0.10000000149011612
       Class: rviz/Odometry
       Covariance:
@@ -112,8 +97,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 0.09640000015497208
-        Min Value: 0.09640000015497208
+        Max Value: 0.09000000357627869
+        Min Value: 0.09000000357627869
         Value: true
       Axis: Z
       Channel Name: x
@@ -132,7 +117,7 @@ Visualization Manager:
       Size (Pixels): 3
       Size (m): 0.10000000149011612
       Style: Flat Squares
-      Topic: /puzzlebot_1/scan
+      Topic: /scan
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
@@ -209,6 +194,14 @@ Visualization Manager:
       Topic: /ray_trace
       Unreliable: false
       Value: true
+    - Class: rviz/Marker
+      Enabled: true
+      Marker Topic: /goal
+      Name: Marker
+      Namespaces:
+        goal: true
+      Queue Size: 100
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -237,7 +230,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 8.055371284484863
+      Distance: 13.583730697631836
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -253,9 +246,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.4797964096069336
+      Pitch: 1.5697963237762451
       Target Frame: <Fixed Frame>
-      Yaw: 6.233584403991699
+      Yaw: 4.703568458557129
     Saved: ~
 Window Geometry:
   Displays:
