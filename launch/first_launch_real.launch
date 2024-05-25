@@ -1,0 +1,12 @@
+<launch>
+    <include file="$(find rplidar_ros)/launch/rplidar_a1.launch"/>
+
+    <param name="robot_description" command="$(find xacro)/xacro '$(find aranchubots_autonomousnavigation_puzzlebot)/urdf/puzzlebot_real.xacro'" />
+
+	<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen"/>
+
+
+  	<node name="odom" pkg="aranchubots_autonomousnavigation_puzzlebot" type="odom.py"/>
+
+    <include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/include/start_navigating_2d.launch"/>
+</launch>

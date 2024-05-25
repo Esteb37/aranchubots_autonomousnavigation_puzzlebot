@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 import rospy
 from geometry_msgs.msg import Twist, PoseStamped
 from visualization_msgs.msg import Marker
@@ -45,14 +45,14 @@ class AutonomousNav():
 		hit_distance = 0
 
 		###******* INIT PUBLISHERS *******###
-		self.pub_cmd_vel = rospy.Publisher('puzzlebot_1/base_controller/cmd_vel', Twist, queue_size=1)
-		pub_theta_gtg = rospy.Publisher('theta_gtg', PoseStamped, queue_size=1)
-		pub_theta_AO = rospy.Publisher('theta_AO', PoseStamped, queue_size=1)
-		pub_closest_object = rospy.Publisher('closest_object', Marker, queue_size=1)
-		pub_ray_trace = rospy.Publisher('ray_trace', Path, queue_size=1)
-		pub_mode = rospy.Publisher('mode', Marker, queue_size=1)
+		self.pub_cmd_vel = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
+		pub_theta_gtg = rospy.Publisher('/theta_gtg', PoseStamped, queue_size=1)
+		pub_theta_AO = rospy.Publisher('/theta_AO', PoseStamped, queue_size=1)
+		pub_closest_object = rospy.Publisher('/closest_object', Marker, queue_size=1)
+		pub_ray_trace = rospy.Publisher('/ray_trace', Path, queue_size=1)
+		pub_mode = rospy.Publisher('/mode', Marker, queue_size=1)
 
-		rospy.Subscriber("puzzlebot_1/scan", LaserScan, self.laser_cb)
+		rospy.Subscriber("/scan", LaserScan, self.laser_cb)
 		rospy.Subscriber("/run", Bool, self.run_cb)
 		rospy.Subscriber("/odom", Odometry, self.odom_cb)
 
@@ -210,6 +210,8 @@ class AutonomousNav():
 			path.header.frame_id = "odom"
 			path.poses = []
 
+			rospy.loginfo(self.x_target)
+   			rospy.loginfo(self.y_target)
 			pose = PoseStamped()
 			pose.header.stamp = rospy.Time.now()
 			pose.header.frame_id = "odom"

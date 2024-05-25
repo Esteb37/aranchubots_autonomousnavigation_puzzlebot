@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 import rospy
 import yaml
 from sensor_msgs.msg import CameraInfo
@@ -34,4 +34,3 @@ if __name__ == "__main__":
     while not rospy.is_shutdown():
         publisher.publish(camera_info_msg)
         rate.sleep()
-

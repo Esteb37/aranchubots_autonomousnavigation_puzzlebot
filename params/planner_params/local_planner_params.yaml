@@ -14,17 +14,17 @@ TrajectoryPlannerROS:
   acc_lim_theta: 20.0 #Default: 3.2 (0 - 20 range)
 
   #Maximum forward (in x axis) velocity for robot in m/s
-  max_vel_x: 0.15 #Default: 0.5 (0 - 20 range)
+  max_vel_x: 0.1 #Default: 0.5 (0 - 20 range)
   #Minimum forward (in x axis) velocity for robot in m/s
   #Must be high enough to overcome friction
-  min_vel_x: 0.12 #Default: 0.1 (0 - 20 range)
+  min_vel_x: 0.1 #Default: 0.1 (0 - 20 range)
 
   #Maximum rotation velocity for robot base in rad/s
-  max_vel_theta: 0.4
+  max_vel_theta: 0.2
   #Minimum rotation velocity for robot base in rad/s
-  min_vel_theta: -0.4
+  min_vel_theta: -0.2
   #Minimum rotational velocity for base while performing in-place rotations in rad/s
-  min_in_place_vel_theta: 0.4
+  min_in_place_vel_theta: 0.2
 
   #When robot gets stuck, an escape velocity means the robot will go backwards
   #hence the velocity must be negative so the robot can go away from the obstacle

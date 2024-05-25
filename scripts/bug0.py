@@ -45,13 +45,13 @@ class AutonomousNav():
 
 
 		###******* INIT PUBLISHERS *******###
-		self.pub_cmd_vel = rospy.Publisher('puzzlebot_1/base_controller/cmd_vel', Twist, queue_size=1)
-		pub_theta_gtg = rospy.Publisher('theta_gtg', PoseStamped, queue_size=1)
-		pub_theta_AO = rospy.Publisher('theta_AO', PoseStamped, queue_size=1)
-		pub_closest_object = rospy.Publisher('closest_object', Marker, queue_size=1)
-		pub_mode = rospy.Publisher('mode', Marker, queue_size=1)
+		self.pub_cmd_vel = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
+		pub_theta_gtg = rospy.Publisher('/theta_gtg', PoseStamped, queue_size=1)
+		pub_theta_AO = rospy.Publisher('/theta_AO', PoseStamped, queue_size=1)
+		pub_closest_object = rospy.Publisher('/closest_object', Marker, queue_size=1)
+		pub_mode = rospy.Publisher('/mode', Marker, queue_size=1)
 
-		rospy.Subscriber("puzzlebot_1/scan", LaserScan, self.laser_cb)
+		rospy.Subscriber("/scan", LaserScan, self.laser_cb)
 		rospy.Subscriber("/run", Bool, self.run_cb)
 		rospy.Subscriber("/odom", Odometry, self.odom_cb)
 

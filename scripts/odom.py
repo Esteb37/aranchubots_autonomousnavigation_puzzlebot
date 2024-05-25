@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 import rospy
 from geometry_msgs.msg import Pose, PoseStamped
 from nav_msgs.msg import Odometry
@@ -24,20 +24,20 @@ class PuzzlebotLocClass():
 
 		# Subscribers
 		############################### SUBSCRIBERS #####################################
-		rospy.Subscriber("/puzzlebot_1/wl", Float32, self.wl_cb)
-		rospy.Subscriber("/puzzlebot_1/wr", Float32, self.wr_cb)
+		rospy.Subscriber("/wl", Float32, self.wl_cb)
+		rospy.Subscriber("/wr", Float32, self.wr_cb)
 
-		self.x_target = rospy.get_param('/odom_node/goal_x', 0) #x position of the goal
-		self.y_target = rospy.get_param('/odom_node/goal_y', 0) #y position of the goal
+		self.x_target = rospy.get_param('/goal_x', 0) #x position of the goal
+		self.y_target = rospy.get_param('/goal_y', 0) #y position of the goal
 		goal = PoseStamped()
 		goal.header.frame_id = "odom"
 		goal.header.stamp = rospy.Time.now()
 		goal.pose.position.x = self.x_target
 		goal.pose.position.y = self.y_target
 
-		x_init = rospy.get_param('/odom_node/pos_x', 0) #x position of the robot
-		y_init = rospy.get_param('/odom_node/pos_y', 0)
-		theta_init = rospy.get_param('/odom_node/pos_theta', 0)
+		x_init = rospy.get_param('/pos_x', 0) #x position of the robot
+		y_init = rospy.get_param('/pos_y', 0)
+		theta_init = rospy.get_param('/pos_theta', 0)
 
 
 		# Publishers
@@ -126,7 +126,7 @@ class PuzzlebotLocClass():
 
 		self.odometry.header.stamp = rospy.Time.now()
 		self.odometry.header.frame_id = "odom"
-		self.odometry.child_frame_id = "base_footprint"
+		self.odometry.child_frame_id = "base_link"
 
 
 		# Fill the pose information
@@ -166,7 +166,7 @@ class PuzzlebotLocClass():
 		# Fill the transformation information
 		self.t.header.stamp = rospy.Time.now()
 		self.t.header.frame_id = "odom"
-		self.t.child_frame_id = "base_footprint"
+		self.t.child_frame_id = "base_link"
 		self.t.transform.translation.x = self.mu[0]
 		self.t.transform.translation.y = self.mu[1]
 		self.t.transform.translation.z = 0.0
