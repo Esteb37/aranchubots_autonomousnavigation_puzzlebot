@@ -6,10 +6,10 @@
     <arg name="camera_info" default="/camera_info"/>
 
     <include file="$(find ros_deep_learning)/launch/video_source.ros1.launch"/>
-    <include file="$(find minichallenge6)/launch/aruco_detect.launch"/>
+    <include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/include/aruco/aruco_detect.launch"/>
 
-    <node pkg="minichallenge6" type="yaml_to_camera_info_publisher.py" name="yaml_to_camera_info_publisher"/>
-    <node pkg="minichallenge6" type="aruco.py" name="aruco"/>
+    <node pkg="aranchubots_autonomousnavigation_puzzlebot" type="yaml_to_camera_info_publisher.py" name="yaml_to_camera_info_publisher"/>
+    <node pkg="aranchubots_autonomousnavigation_puzzlebot" type="aruco.py" name="aruco" output="screen"/>
     <node pkg="image_transport" type="republish" name="compress_img" args="raw in:=/video_source/raw compressed out:=/camera/image"/>
-   
+
 </launch>

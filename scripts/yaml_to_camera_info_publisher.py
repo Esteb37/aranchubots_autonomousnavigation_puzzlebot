@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 import rospy
 import yaml
 from sensor_msgs.msg import CameraInfo
@@ -20,7 +20,7 @@ def yaml_to_CameraInfo(yaml_fname):
     return camera_info_msg
 
 if __name__ == "__main__":
-    filename = "/home/karenc/catkin_ws/src/minichallenge6/include/ost.yaml"
+    filename = "/home/puzzlebot/catkin_ws/src/aranchubots_autonomousnavigation_puzzlebot/include/ost.yaml"
 
     # Parse yaml file
     camera_info_msg = yaml_to_CameraInfo(filename)
@@ -34,4 +34,3 @@ if __name__ == "__main__":
     while not rospy.is_shutdown():
         publisher.publish(camera_info_msg)
         rate.sleep()
-

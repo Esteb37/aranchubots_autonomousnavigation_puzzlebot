@@ -1,0 +1,12 @@
+<launch>
+    <include file="$(find rplidar_ros)/launch/rplidar_a1.launch"/>
+
+
+
+    <include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/include/robot/description_real.launch"/>
+
+
+  	<node name="odom" pkg="aranchubots_autonomousnavigation_puzzlebot" type="odom.py"/>
+
+    <include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/include/start_navigating_2d.launch"/>
+</launch>

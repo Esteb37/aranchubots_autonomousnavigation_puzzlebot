@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import rospy
 from geometry_msgs.msg import Twist, PoseStamped
 from visualization_msgs.msg import Marker
@@ -12,7 +12,7 @@ from tf.transformations import euler_from_quaternion, quaternion_from_euler
 # This class will make the puzzlebot move to a given goal
 class AutonomousNav():
 
-	ANGLE_OFFSET = np.pi
+	ANGLE_OFFSET = 0
 
 	def __init__(self):
 		rospy.on_shutdown(self.cleanup)
@@ -37,8 +37,8 @@ class AutonomousNav():
 
 		closest_angle = 0.0 #Angle to the closest object
 		closest_range = 0.0 #Distance to the closest object
-		ao_distance = 0.7 # distance from closest obstacle to activate the avoid obstacle behavior [m]
-		stop_distance = 0.15 # distance from closest obstacle to stop the robot [m]
+		ao_distance = 0.2 # distance from closest obstacle to activate the avoid obstacle behavior [m]
+		stop_distance = 0.1 # distance from closest obstacle to stop the robot [m]
 
 		v_msg = Twist() # Robot's desired speed
 		v_msg.linear.x = 0.2
@@ -48,14 +48,14 @@ class AutonomousNav():
 		hit_distance = 0
 
 		###******* INIT PUBLISHERS *******###
-		self.pub_cmd_vel = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
-		pub_theta_gtg = rospy.Publisher('/theta_gtg', PoseStamped, queue_size=1)
-		pub_theta_AO = rospy.Publisher('/theta_AO', PoseStamped, queue_size=1)
-		pub_closest_object = rospy.Publisher('/closest_object', Marker, queue_size=1)
-		pub_ray_trace = rospy.Publisher('/ray_trace', Path, queue_size=1)
-		pub_mode = rospy.Publisher('/mode', Marker, queue_size=1)
+		self.pub_cmd_vel = rospy.Publisher('puzzlebot_1/base_controller/cmd_vel', Twist, queue_size=1)
+		pub_theta_gtg = rospy.Publisher('theta_gtg', PoseStamped, queue_size=1)
+		pub_theta_AO = rospy.Publisher('theta_AO', PoseStamped, queue_size=1)
+		pub_closest_object = rospy.Publisher('closest_object', Marker, queue_size=1)
+		pub_ray_trace = rospy.Publisher('ray_trace', Path, queue_size=1)
+		pub_mode = rospy.Publisher('mode', Marker, queue_size=1)
 
-		rospy.Subscriber("/scan", LaserScan, self.laser_cb)
+		rospy.Subscriber("puzzlebot_1/scan", LaserScan, self.laser_cb)
 		rospy.Subscriber("/run", Bool, self.run_cb)
 		rospy.Subscriber("/odom", Odometry, self.odom_cb)
 
@@ -178,9 +178,9 @@ class AutonomousNav():
 			marker_closest.pose.orientation.y = 0.0
 			marker_closest.pose.orientation.z = 0.0
 			marker_closest.pose.orientation.w = 1.0
-			marker_closest.scale.x = 0.2
-			marker_closest.scale.y = 0.2
-			marker_closest.scale.z = 0.5
+			marker_closest.scale.x = 0.1
+			marker_closest.scale.y = 0.1
+			marker_closest.scale.z = 0.3
 			marker_closest.color.a = 1.0
 			marker_closest.color.r = 0.0
 			marker_closest.color.g = 1.0
@@ -193,16 +193,19 @@ class AutonomousNav():
 			marker_mode.id = 0
 			marker_mode.type = Marker.CYLINDER
 			marker_mode.action = Marker.ADD
+			marker_mode.scale.x = ao_distance*2
+			marker_mode.scale.y = ao_distance*2
+			marker_mode.scale.z = 0.01
+
 			marker_mode.pose.position.x = 0
 			marker_mode.pose.position.y = 0
 			marker_mode.pose.position.z = 0
 			marker_mode.pose.orientation.x = 0.0
+
 			marker_mode.pose.orientation.y = 0.0
 			marker_mode.pose.orientation.z = 0.0
 			marker_mode.pose.orientation.w = 1.0
-			marker_mode.scale.x = 0.4
-			marker_mode.scale.y = 0.4
-			marker_mode.scale.z = 0.5
+
 			marker_mode.color.a = 1.0
 			marker_mode.color.r = 1.0 if current_state == 'GoToGoal' else 0.0
 			marker_mode.color.g = 1.0 if current_state == 'GoToGoal' else 0.0
@@ -289,15 +292,21 @@ class AutonomousNav():
 		return v, w
 
 	def compute_fw_control(self, closest_angle, clockwise):
-		v = 0.17 if self.is_one else 0.2 # [m/s] Robot's linear velocity while avoiding obstacles
-		kAO = 2.8 # Proportional constant for the angular speed controller
+		kAO = 1.5 # Proportional constant for the angular speed controller
 		closest_angle = self.normalize_angle(closest_angle)
 		if clockwise:
 			theta_fw = self.get_theta_AO(closest_angle) - np.pi/2
 		else:
 			theta_fw = self.get_theta_AO(closest_angle) + np.pi/2
 		theta_fw = self.normalize_angle(theta_fw)
+
 		w = kAO * theta_fw
+
+		if abs(theta_fw) > np.pi / 2:
+			v = 0
+		else:
+			v = 0.17
+
 		return v, w
 
 	def get_theta_AO(self, closest_angle):
