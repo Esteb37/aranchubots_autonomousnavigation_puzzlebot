@@ -14,6 +14,8 @@ Panels:
         - /Marker1
         - /Marker1/Namespaces1
         - /Marker3
+        - /MarkerArray1
+        - /MarkerArray1/Namespaces1
       Splitter Ratio: 0.5
     Tree Height: 549
   - Class: rviz/Selection
@@ -199,7 +201,7 @@ Visualization Manager:
       Marker Topic: /goal_marker
       Name: Marker
       Namespaces:
-        goal_marker: true
+        {}
       Queue Size: 100
       Value: true
     - Alpha: 1
@@ -257,6 +259,14 @@ Visualization Manager:
       Unreliable: false
       Use Timestamp: false
       Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /aruco_markers
+      Name: MarkerArray
+      Namespaces:
+        aruco: true
+      Queue Size: 100
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -285,7 +295,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 10.662160873413086
+      Distance: 7.878174781799316
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -301,9 +311,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.5647963285446167
+      Pitch: 0.2797972857952118
       Target Frame: <Fixed Frame>
-      Yaw: 4.773561954498291
+      Yaw: 4.893561363220215
     Saved: ~
 Window Geometry:
   Displays:

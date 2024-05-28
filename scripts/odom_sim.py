@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 import rospy
-from geometry_msgs.msg import Pose
-from visualization_msgs.msg import Marker
+from visualization_msgs.msg import Marker, MarkerArray
 from nav_msgs.msg import Odometry
-from std_msgs.msg import Float32
+from std_msgs.msg import Float32, Float32MultiArray
 from tf.transformations import quaternion_from_euler
 import tf2_ros
-from geometry_msgs.msg import TransformStamped, Twist
+from geometry_msgs.msg import TransformStamped
 import numpy as np
 from utils.KF import KalmanFilter
 from utils.aruco_markers import MarkerLocations
@@ -26,78 +25,78 @@ class PuzzlebotLocClass():
 		############################### SUBSCRIBERS #####################################
 		rospy.Subscriber("/puzzlebot_1/wl", Float32, self.wl_cb)
 		rospy.Subscriber("/puzzlebot_1/wr", Float32, self.wr_cb)
-		rospy.Subscriber("/puzzlebot_1/base_controller/cmd_vel", Twist, self.cmd_vel_cb)
-		rospy.Subscriber("/aruco", Float32, self.aruco_cb)
+		rospy.Subscriber("/aruco", Float32MultiArray, self.aruco_cb)
 
-		self.x_target = rospy.get_param('/odom_node/goal_x', 0) #x position of the goal
-		self.y_target = rospy.get_param('/odom_node/goal_y', 0) #y position of the goal
-
-
-		x_init = rospy.get_param('/odom_node/pos_x', 0) #x position of the robot
+		x_init = rospy.get_param('/odom_node/pos_x', 0)
 		y_init = rospy.get_param('/odom_node/pos_y', 0)
 		theta_init = rospy.get_param('/odom_node/pos_theta', 0)
 
 		# Publishers
-		odom_pub = rospy.Publisher('/odom', Odometry, queue_size=1)
+		self.odom_pub = rospy.Publisher('/odom', Odometry, queue_size=1)
 		self.goal_pub = rospy.Publisher('/goal_marker', Marker, queue_size=1)
+		self.aruco_pub = rospy.Publisher('/aruco_markers', MarkerArray, queue_size=1)
+		self.tf_broadcaster = tf2_ros.TransformBroadcaster()
 
 		############ ROBOT CONSTANTS ################
-		self.r = 0.05 #puzzlebot wheel radius [m]
-		self.L = 0.19 #puzzlebot wheel separation [m]
-		self.dt = 0.02 # Desired time to update the robot's pose [s]
+		R = 0.05 #puzzlebot wheel radius [m]
+		L = 0.19 #puzzlebot wheel separation [m]
+		DT = 0.02 # Desired time to update the robot's pose [s]
+		KR = 20.0
+		KL = 30.0
 
 		############ Variables ###############
-		self.mu = np.array([x_init, y_init, theta_init])
-		self.sigma = np.zeros((3,3))
-		self.Qk = np.zeros((3,3))
-		self.Rk = np.zeros((2,2))
-		self.cov_ruido = np.zeros((2,3))
-		self.jacob = np.zeros((3,2))
+		mu = np.array([x_init, y_init, theta_init])
+		sigma = np.zeros((3,3))
+
+		Qk = np.zeros((3,3))
+		Rk = np.zeros((2,2))
+		covariance = np.zeros((2,3))
+		jacobian = np.zeros((3,2))
 
 		self.wl = 0.0
 		self.wr = 0.0
-		self.theta_ant = 0.0
-		self.v = 0.0
-		self.w = 0.0
-		self.kr = 20.0
-		self.kl = 30.0
-
-		self.odometry = Odometry()
-
-		self.tf_broadcaster = tf2_ros.TransformBroadcaster()
-		self.t = TransformStamped()
-
 		self.aruco_id = 0
 		self.z_i = np.zeros(2)
 		self.m_i = np.zeros(2)
 
-		rate = rospy.Rate(int(0.5/self.dt))
+		KF = KalmanFilter(DT, mu)
 
-		KF = KalmanFilter(self.dt, self.mu)
-
+		rate = rospy.Rate(int(1/DT))
 		while not rospy.is_shutdown():
 
+			WR = self.wr
+			WL = self.wl
+			mi = self.m_i
+			zi = self.z_i
 
-			self.update_robot_pose()
+			V = R * (WR + WL)/2
+			W = R * (WR - WL)/L
 
-			self.publish_transforms()
+			theta = mu[2]
 
-			self.cov_ruido = np.array([[self.kr*np.abs(self.wr), 0], [0, self.kl*np.abs(self.wl)]])
-			self.jacob = (0.5*self.r*self.dt) * np.array([[np.cos(self.theta_ant), np.cos(self.theta_ant)], [np.sin(self.theta_ant), np.sin(self.theta_ant)], [2/self.L, -2/self.L]])
+			covariance = np.array([[KR * np.abs(WR),			  0],
+                          		   [0,				KL * np.abs(WL)]])
 
-			self.Qk = self.jacob.dot(self.cov_ruido).dot(self.jacob.T)
+			jacobian = (0.5 * R * DT) * np.array([[np.cos(theta), np.cos(theta)],
+												  [np.sin(theta), np.sin(theta)],
+												  [2/L,			 -2/L		   ]])
 
-			self.mu, self.sigma = KF.predict([self.v, self.w], self.Qk)
+			Qk = jacobian.dot(covariance).dot(jacobian.T)
+
+			KF.predict([V, W], Qk)
 
 			if self.aruco_id > 0:
-				self.mu, self.sigma = KF.correct(self.m, self.z, self.Rk)
+				mu, sigma = KF.correct(mi, zi, Rk)
+			else:
+				mu, sigma = KF.step()
 
 			self.aruco_id = 0
 
-			odom_pub.publish(self.odometry)
+			self.publish_odom(mu, sigma, [V, W])
 
-			self.publish_goal_marker()
+			self.publish_transforms(mu)
 
+			self.publish_aruco_markers()
 
 			rate.sleep()
 
@@ -107,120 +106,116 @@ class PuzzlebotLocClass():
 	def wr_cb(self, msg):
 		self.wr = msg.data
 
-	def update_robot_pose(self):
-		#This functions receives the robot speed v [m/s] and w [rad/s]
-		# and gets the robot's pose (x, y, theta) where (x,y) are in [m] and (theta) in [rad]
-		# is the orientation,
-
-		v = self.r*(self.wr + self.wl)/2
-		w = self.r*(self.wr - self.wl)/self.L
-
-		self.mu[0] = self.mu[0] + v*np.cos(self.mu[2])*self.dt
-		self.mu[1] = self.mu[1] + v*np.sin(self.mu[2])*self.dt
-		self.theta_ant = self.mu[2]
-		self.mu[2] = self.mu[2] + w*self.dt
-
-		self.odometry.header.stamp = rospy.Time.now()
-		self.odometry.header.frame_id = "odom"
-		self.odometry.child_frame_id = "base_link"
-
-		# Fill the pose information
-		self.odometry.pose.pose.position.x = self.mu[0]
-		self.odometry.pose.pose.position.y = self.mu[1]
-		self.odometry.pose.pose.position.z = 0.0
-
-		quat = quaternion_from_euler(0,0,self.mu[2])
-
-		self.odometry.pose.pose.orientation.x = quat[0]
-		self.odometry.pose.pose.orientation.y = quat[1]
-		self.odometry.pose.pose.orientation.z = quat[2]
-		self.odometry.pose.pose.orientation.w = quat[3]
-
-		self.odometry.twist.twist.linear.x = v
-		self.odometry.twist.twist.angular.z = w
-
-		# Init a 36 elements array
-		self.odometry.pose.covariance = [0.0] * 36
-
-		# Fill the 3D covariance matrix
-		self.odometry.pose.covariance[0] = self.sigma[0][0]
-		self.odometry.pose.covariance[1] = self.sigma[0][1]
-		self.odometry.pose.covariance[5] = self.sigma[0][2]
-		self.odometry.pose.covariance[6] = self.sigma[1][0]
-		self.odometry.pose.covariance[7] = self.sigma[1][1]
-		self.odometry.pose.covariance[11] = self.sigma[1][2]
-		self.odometry.pose.covariance[30] = self.sigma[2][0]
-		self.odometry.pose.covariance[31] = self.sigma[2][1]
-		self.odometry.pose.covariance[35] = self.sigma[2][2]
-
-	def publish_transforms(self):
-		# Fill the transformation information
-		self.t.header.stamp = rospy.Time.now()
-		self.t.header.frame_id = "odom"
-		self.t.child_frame_id = "base_link"
-		self.t.transform.translation.x = self.mu[0]
-		self.t.transform.translation.y = self.mu[1]
-		self.t.transform.translation.z = 0.0
-
-		quat = quaternion_from_euler(0,0,self.mu[2])
-
-		self.t.transform.rotation.x = quat[0]
-		self.t.transform.rotation.y = quat[1]
-		self.t.transform.rotation.z = quat[2]
-		self.t.transform.rotation.w = quat[3]
-
-		# A transformation is broadcasted instead of published
-		self.tf_broadcaster.sendTransform(self.t) #broadcast the transformation
-
-		# map to odom transform at 0,0
-		self.t.header.stamp = rospy.Time.now()
-		self.t.header.frame_id = "map"
-		self.t.child_frame_id = "odom"
-		self.t.transform.translation.x = 0
-		self.t.transform.translation.y = 0
-		self.t.transform.translation.z = 0.0
-
-		self.t.transform.rotation.x = 0
-		self.t.transform.rotation.y = 0
-		self.t.transform.rotation.z = 0
-		self.t.transform.rotation.w = 1
-
-		self.tf_broadcaster.sendTransform(self.t)
-
-	def publish_goal_marker(self):
-		marker_goal = Marker()
-		marker_goal.header.frame_id = "odom"
-		marker_goal.header.stamp = rospy.Time.now()
-		marker_goal.ns = "goal_marker"
-		marker_goal.id = 0
-		marker_goal.type = Marker.CUBE
-		marker_goal.action = Marker.ADD
-		marker_goal.pose.position.x = self.x_target
-		marker_goal.pose.position.y = self.y_target
-		marker_goal.pose.position.z = 0
-		marker_goal.pose.orientation.x = 0.0
-		marker_goal.pose.orientation.y = 0.0
-		marker_goal.pose.orientation.z = 0.0
-		marker_goal.pose.orientation.w = 1.0
-		marker_goal.scale.x = 0.2
-		marker_goal.scale.y = 0.2
-		marker_goal.scale.z = 0.5
-		marker_goal.color.a = 1.0
-		marker_goal.color.r = 0.0
-		marker_goal.color.g = 1.0
-		marker_goal.color.b = 0.0
-
-		self.goal_pub.publish(marker_goal)
-
-
 	def aruco_cb(self, msg):
 		self.aruco_id = int(msg.data[2])
-		self.z = msg.data[0:2]
-		self.m = MarkerLocations[self.aruco_id]
+		self.z_i = msg.data[0:2]
+		self.m_i = MarkerLocations[self.aruco_id]
 
-	def cmd_vel_cb(self, msg):
-		self.v = msg.linear.x
-		self.w = msg.angular.z
+	def publish_odom(self, pose, sigma, speed):
+		#This functions receives the robot speed v [m/s] and w [rad/s]
+		# and gets the robot's pose (x, y, theta) where (x,y) are in [m] and (theta) in [rad]
+		# is the orientation
+
+		odometry = Odometry()
+
+		odometry.header.stamp = rospy.Time.now()
+		odometry.header.frame_id = "odom"
+		odometry.child_frame_id = "base_link"
+
+		# Fill the pose information
+		odometry.pose.pose.position.x = pose[0]
+		odometry.pose.pose.position.y = pose[1]
+		odometry.pose.pose.position.z = 0.0
+
+		quat = quaternion_from_euler(0,0,pose[2])
+
+		odometry.pose.pose.orientation.x = quat[0]
+		odometry.pose.pose.orientation.y = quat[1]
+		odometry.pose.pose.orientation.z = quat[2]
+		odometry.pose.pose.orientation.w = quat[3]
+
+		odometry.twist.twist.linear.x = speed[0]
+		odometry.twist.twist.angular.z = speed[1]
+
+		# Init a 36 elements array
+		odometry.pose.covariance = [0.0] * 36
+
+		# Fill the 3D covariance matrix
+		odometry.pose.covariance[0] = sigma[0][0]
+		odometry.pose.covariance[1] = sigma[0][1]
+		odometry.pose.covariance[5] = sigma[0][2]
+		odometry.pose.covariance[6] = sigma[1][0]
+		odometry.pose.covariance[7] = sigma[1][1]
+		odometry.pose.covariance[11] = sigma[1][2]
+		odometry.pose.covariance[30] = sigma[2][0]
+		odometry.pose.covariance[31] = sigma[2][1]
+		odometry.pose.covariance[35] = sigma[2][2]
+
+		self.odom_pub.publish(odometry)
+
+	def publish_transforms(self, pose):
+
+		t = TransformStamped()
+
+		t.header.stamp = rospy.Time.now()
+		t.header.frame_id = "odom"
+		t.child_frame_id = "base_link"
+		t.transform.translation.x = pose[0]
+		t.transform.translation.y = pose[1]
+		t.transform.translation.z = 0.0
+
+		quat = quaternion_from_euler(0,0,pose[2])
+
+		t.transform.rotation.x = quat[0]
+		t.transform.rotation.y = quat[1]
+		t.transform.rotation.z = quat[2]
+		t.transform.rotation.w = quat[3]
+
+		self.tf_broadcaster.sendTransform(t)
+
+		# map to odom transform at 0,0
+		t.header.stamp = rospy.Time.now()
+		t.header.frame_id = "map"
+		t.child_frame_id = "odom"
+		t.transform.translation.x = 0
+		t.transform.translation.y = 0
+		t.transform.translation.z = 0.0
+
+		t.transform.rotation.x = 0
+		t.transform.rotation.y = 0
+		t.transform.rotation.z = 0
+		t.transform.rotation.w = 1
+
+		self.tf_broadcaster.sendTransform(t)
+
+	def publish_aruco_markers(self):
+		marker_array = MarkerArray()
+		for idx, marker in MarkerLocations.items():
+			m = Marker()
+			m.header.frame_id = "map"
+			m.header.stamp = rospy.Time.now()
+			m.ns = "aruco"
+			m.id = idx
+			m.type = m.CUBE
+			m.action = m.ADD
+			m.pose.position.x = marker[0]
+			m.pose.position.y = marker[1]
+			m.pose.position.z = 0.083 + 0.097 / 2
+			m.pose.orientation.x = 0.0
+			m.pose.orientation.y = 0.0
+			m.pose.orientation.z = 0.0
+			m.pose.orientation.w = 1.0
+			m.scale.x = 0.097
+			m.scale.y = 0.097
+			m.scale.z = 0.097
+			m.color.a = 1.0
+			m.color.r = 1.0
+			m.color.g = 1.0
+			m.color.b = 1.0
+			m.lifetime = rospy.Duration(1)
+			marker_array.markers.append(m)
+
+		self.aruco_pub.publish(marker_array)
 
 
 ############################### MAIN PROGRAM ####################################
