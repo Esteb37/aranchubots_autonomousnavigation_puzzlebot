@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import rospy
 from geometry_msgs.msg import Twist, PoseStamped
 from visualization_msgs.msg import Marker
@@ -12,21 +12,22 @@ from tf.transformations import euler_from_quaternion, quaternion_from_euler
 # This class will make the puzzlebot move to a given goal
 class AutonomousNav():
 
-	ANGLE_OFFSET = np.pi
+	ANGLE_OFFSET = 0
 
 	def __init__(self):
 		rospy.on_shutdown(self.cleanup)
 
 		############ Variables ###############
-		self.x_target = rospy.get_param('/bug2/goal_x', 0) #x position of the goal
-		self.y_target = rospy.get_param('/bug2/goal_y', 0) #y position of the goal
 		eps = rospy.get_param('/bug2/eps', 0.0) #distance to the goal to switch to the next state
-		self.is_one = rospy.get_param('/bug2/is_one', False)
 		clockwise = False
 
 		self.pose_x = 0.0
 		self.pose_y = 0.0
+
 		self.pose_theta = 0.0
+
+		self.x_target = 0.0
+		self.y_target = 0.0
 
 		self.goal_received = False #flag to indicate if the goal has been received
 		self.lidar_received = 0 #flag to indicate if the laser scan has been received
@@ -37,8 +38,8 @@ class AutonomousNav():
 
 		closest_angle = 0.0 #Angle to the closest object
 		closest_range = 0.0 #Distance to the closest object
-		ao_distance = 0.7 # distance from closest obstacle to activate the avoid obstacle behavior [m]
-		stop_distance = 0.15 # distance from closest obstacle to stop the robot [m]
+		ao_distance = 0.2 # distance from closest obstacle to activate the avoid obstacle behavior [m]
+		stop_distance = 0.1 # distance from closest obstacle to stop the robot [m]
 
 		v_msg = Twist() # Robot's desired speed
 		v_msg.linear.x = 0.2
@@ -48,16 +49,17 @@ class AutonomousNav():
 		hit_distance = 0
 
 		###******* INIT PUBLISHERS *******###
-		self.pub_cmd_vel = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
-		pub_theta_gtg = rospy.Publisher('/theta_gtg', PoseStamped, queue_size=1)
-		pub_theta_AO = rospy.Publisher('/theta_AO', PoseStamped, queue_size=1)
-		pub_closest_object = rospy.Publisher('/closest_object', Marker, queue_size=1)
-		pub_ray_trace = rospy.Publisher('/ray_trace', Path, queue_size=1)
-		pub_mode = rospy.Publisher('/mode', Marker, queue_size=1)
+		self.pub_cmd_vel = rospy.Publisher('/base_controller/cmd_vel', Twist, queue_size=1)
+		pub_theta_gtg = rospy.Publisher('theta_gtg', PoseStamped, queue_size=1)
+		pub_theta_AO = rospy.Publisher('theta_AO', PoseStamped, queue_size=1)
+		pub_closest_object = rospy.Publisher('closest_object', Marker, queue_size=1)
+		pub_ray_trace = rospy.Publisher('ray_trace', Path, queue_size=1)
+		pub_mode = rospy.Publisher('mode', Marker, queue_size=1)
 
 		rospy.Subscriber("/scan", LaserScan, self.laser_cb)
-		rospy.Subscriber("/run", Bool, self.run_cb)
+		rospy.Subscriber("/move_base_simple/goal", PoseStamped, self.goal_cb)
 		rospy.Subscriber("/odom", Odometry, self.odom_cb)
+
 
 		#********** INIT NODE **********###
 		freq = 50
@@ -69,10 +71,8 @@ class AutonomousNav():
 		while not rospy.is_shutdown() and not self.odom_received:
 			rate.sleep()
 
-		start_x = self.pose_x
-		start_y = self.pose_y
-		hits = 0
-		ray_trace = self.get_ray_trace([start_x, start_y], [self.x_target, self.y_target])
+		self.calculate_ray()
+
 		################ MAIN LOOP ################
 		while not rospy.is_shutdown():
 			theta_gtg = self.get_theta_gtg(self.x_target, self.y_target, self.pose_x, self.pose_y, self.pose_theta)
@@ -112,13 +112,10 @@ class AutonomousNav():
 						v_msg.angular.z = w_gtg
 
 				elif current_state == 'AvoidObstacle':
-					if self.distance_to_line([self.pose_x, self.pose_y], ray_trace) < 0.05 and self.progress() < abs(hit_distance - eps):
-						if not self.is_one or hits > 0:
-							current_state = "GoToGoal"
-							print("Going to goal")
-						else:
-							hits+=1
-							hit_distance = self.progress()
+					if self.distance_to_line([self.pose_x, self.pose_y], self.ray_trace) < 0.05 and self.progress() < abs(hit_distance - eps):
+						current_state = "GoToGoal"
+						print("Going to goal")
+
 					if self.at_goal():
 						print("At goal")
 						current_state = "Stop"
@@ -178,9 +175,9 @@ class AutonomousNav():
 			marker_closest.pose.orientation.y = 0.0
 			marker_closest.pose.orientation.z = 0.0
 			marker_closest.pose.orientation.w = 1.0
-			marker_closest.scale.x = 0.2
-			marker_closest.scale.y = 0.2
-			marker_closest.scale.z = 0.5
+			marker_closest.scale.x = 0.1
+			marker_closest.scale.y = 0.1
+			marker_closest.scale.z = 0.3
 			marker_closest.color.a = 1.0
 			marker_closest.color.r = 0.0
 			marker_closest.color.g = 1.0
@@ -193,16 +190,19 @@ class AutonomousNav():
 			marker_mode.id = 0
 			marker_mode.type = Marker.CYLINDER
 			marker_mode.action = Marker.ADD
+			marker_mode.scale.x = ao_distance*2
+			marker_mode.scale.y = ao_distance*2
+			marker_mode.scale.z = 0.01
+
 			marker_mode.pose.position.x = 0
 			marker_mode.pose.position.y = 0
 			marker_mode.pose.position.z = 0
 			marker_mode.pose.orientation.x = 0.0
+
 			marker_mode.pose.orientation.y = 0.0
 			marker_mode.pose.orientation.z = 0.0
 			marker_mode.pose.orientation.w = 1.0
-			marker_mode.scale.x = 0.4
-			marker_mode.scale.y = 0.4
-			marker_mode.scale.z = 0.5
+
 			marker_mode.color.a = 1.0
 			marker_mode.color.r = 1.0 if current_state == 'GoToGoal' else 0.0
 			marker_mode.color.g = 1.0 if current_state == 'GoToGoal' else 0.0
@@ -228,8 +228,8 @@ class AutonomousNav():
 			pose = PoseStamped()
 			pose.header.stamp = rospy.Time.now()
 			pose.header.frame_id = "odom"
-			pose.pose.position.x = start_x
-			pose.pose.position.y = start_y
+			pose.pose.position.x = self.start_x
+			pose.pose.position.y = self.start_y
 			pose.pose.position.z = 0
 			pose.pose.orientation.x = 0
 			pose.pose.orientation.y = 0
@@ -289,15 +289,21 @@ class AutonomousNav():
 		return v, w
 
 	def compute_fw_control(self, closest_angle, clockwise):
-		v = 0.17 if self.is_one else 0.2 # [m/s] Robot's linear velocity while avoiding obstacles
-		kAO = 2.8 # Proportional constant for the angular speed controller
+		kAO = 1.5 # Proportional constant for the angular speed controller
 		closest_angle = self.normalize_angle(closest_angle)
 		if clockwise:
 			theta_fw = self.get_theta_AO(closest_angle) - np.pi/2
 		else:
 			theta_fw = self.get_theta_AO(closest_angle) + np.pi/2
 		theta_fw = self.normalize_angle(theta_fw)
+
 		w = kAO * theta_fw
+
+		if abs(theta_fw) > np.pi / 2:
+			v = 0
+		else:
+			v = 0.17
+
 		return v, w
 
 	def get_theta_AO(self, closest_angle):
@@ -316,8 +322,11 @@ class AutonomousNav():
 		self.lidar_msg = msg
 		self.lidar_received = 1
 
-	def run_cb(self, msg):
-		self.goal_received = msg.data
+	def goal_cb(self, msg):
+		self.x_target = msg.pose.position.x
+		self.y_target = msg.pose.position.y
+		self.goal_received = 1
+		self.calculate_ray()
 
 	def cleanup(self):
 		# This function is called just before finishing the node
@@ -360,6 +369,12 @@ class AutonomousNav():
 		x0 = point[0]
 		y0 = point[1]
 		return abs(m*x0 - y0 + b)/np.sqrt(m**2 + 1)
+
+	def calculate_ray(self):
+		self.start_x = self.pose_x
+		self.start_y = self.pose_y
+		self.ray_trace = self.get_ray_trace([self.start_x, self.start_y], [self.x_target, self.y_target])
+
 
 ############################### MAIN PROGRAM ####################################
 if __name__ == "__main__":

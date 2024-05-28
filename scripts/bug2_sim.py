@@ -18,15 +18,16 @@ class AutonomousNav():
 		rospy.on_shutdown(self.cleanup)
 
 		############ Variables ###############
-		self.x_target = rospy.get_param('/bug2/goal_x', 0) #x position of the goal
-		self.y_target = rospy.get_param('/bug2/goal_y', 0) #y position of the goal
 		eps = rospy.get_param('/bug2/eps', 0.0) #distance to the goal to switch to the next state
-		self.is_one = rospy.get_param('/bug2/is_one', False)
 		clockwise = False
 
 		self.pose_x = 0.0
 		self.pose_y = 0.0
+
 		self.pose_theta = 0.0
+
+		self.x_target = 0.0
+		self.y_target = 0.0
 
 		self.goal_received = False #flag to indicate if the goal has been received
 		self.lidar_received = 0 #flag to indicate if the laser scan has been received
@@ -55,9 +56,10 @@ class AutonomousNav():
 		pub_ray_trace = rospy.Publisher('ray_trace', Path, queue_size=1)
 		pub_mode = rospy.Publisher('mode', Marker, queue_size=1)
 
-		rospy.Subscriber("puzzlebot_1/scan", LaserScan, self.laser_cb)
-		rospy.Subscriber("/run", Bool, self.run_cb)
+		rospy.Subscriber("/puzzlebot_1/scan", LaserScan, self.laser_cb)
+		rospy.Subscriber("/move_base_simple/goal", PoseStamped, self.goal_cb)
 		rospy.Subscriber("/odom", Odometry, self.odom_cb)
+
 
 		#********** INIT NODE **********###
 		freq = 50
@@ -69,10 +71,8 @@ class AutonomousNav():
 		while not rospy.is_shutdown() and not self.odom_received:
 			rate.sleep()
 
-		start_x = self.pose_x
-		start_y = self.pose_y
-		hits = 0
-		ray_trace = self.get_ray_trace([start_x, start_y], [self.x_target, self.y_target])
+		self.calculate_ray()
+
 		################ MAIN LOOP ################
 		while not rospy.is_shutdown():
 			theta_gtg = self.get_theta_gtg(self.x_target, self.y_target, self.pose_x, self.pose_y, self.pose_theta)
@@ -112,13 +112,10 @@ class AutonomousNav():
 						v_msg.angular.z = w_gtg
 
 				elif current_state == 'AvoidObstacle':
-					if self.distance_to_line([self.pose_x, self.pose_y], ray_trace) < 0.05 and self.progress() < abs(hit_distance - eps):
-						if not self.is_one or hits > 0:
-							current_state = "GoToGoal"
-							print("Going to goal")
-						else:
-							hits+=1
-							hit_distance = self.progress()
+					if self.distance_to_line([self.pose_x, self.pose_y], self.ray_trace) < 0.05 and self.progress() < abs(hit_distance - eps):
+						current_state = "GoToGoal"
+						print("Going to goal")
+
 					if self.at_goal():
 						print("At goal")
 						current_state = "Stop"
@@ -231,8 +228,8 @@ class AutonomousNav():
 			pose = PoseStamped()
 			pose.header.stamp = rospy.Time.now()
 			pose.header.frame_id = "odom"
-			pose.pose.position.x = start_x
-			pose.pose.position.y = start_y
+			pose.pose.position.x = self.start_x
+			pose.pose.position.y = self.start_y
 			pose.pose.position.z = 0
 			pose.pose.orientation.x = 0
 			pose.pose.orientation.y = 0
@@ -325,8 +322,11 @@ class AutonomousNav():
 		self.lidar_msg = msg
 		self.lidar_received = 1
 
-	def run_cb(self, msg):
-		self.goal_received = msg.data
+	def goal_cb(self, msg):
+		self.x_target = msg.pose.position.x
+		self.y_target = msg.pose.position.y
+		self.goal_received = 1
+		self.calculate_ray()
 
 	def cleanup(self):
 		# This function is called just before finishing the node
@@ -369,6 +369,12 @@ class AutonomousNav():
 		x0 = point[0]
 		y0 = point[1]
 		return abs(m*x0 - y0 + b)/np.sqrt(m**2 + 1)
+
+	def calculate_ray(self):
+		self.start_x = self.pose_x
+		self.start_y = self.pose_y
+		self.ray_trace = self.get_ray_trace([self.start_x, self.start_y], [self.x_target, self.y_target])
+
 
 ############################### MAIN PROGRAM ####################################
 if __name__ == "__main__":

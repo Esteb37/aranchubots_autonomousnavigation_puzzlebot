@@ -28,9 +28,6 @@ class PuzzlebotLocClass():
 		rospy.Subscriber("/puzzlebot_1/wr", Float32, self.wr_cb)
 		rospy.Subscriber("/aruco", Float32, self.aruco_cb)
 
-		x_target = rospy.get_param('/odom_node/goal_x', 0)
-		y_target = rospy.get_param('/odom_node/goal_y', 0)
-
 		x_init = rospy.get_param('/odom_node/pos_x', 0)
 		y_init = rospy.get_param('/odom_node/pos_y', 0)
 		theta_init = rospy.get_param('/odom_node/pos_theta', 0)
@@ -98,8 +95,6 @@ class PuzzlebotLocClass():
 			self.publish_odom(mu, sigma, [V, W])
 
 			self.publish_transforms(mu)
-
-			self.publish_goal_marker(x_target, y_target)
 
 			rate.sleep()
 
@@ -191,31 +186,6 @@ class PuzzlebotLocClass():
 		t.transform.rotation.w = 1
 
 		self.tf_broadcaster.sendTransform(t)
-
-	def publish_goal_marker(self, x, y):
-		marker_goal = Marker()
-		marker_goal.header.frame_id = "odom"
-		marker_goal.header.stamp = rospy.Time.now()
-		marker_goal.ns = "goal_marker"
-		marker_goal.id = 0
-		marker_goal.type = Marker.CUBE
-		marker_goal.action = Marker.ADD
-		marker_goal.pose.position.x = x
-		marker_goal.pose.position.y = y
-		marker_goal.pose.position.z = 0
-		marker_goal.pose.orientation.x = 0.0
-		marker_goal.pose.orientation.y = 0.0
-		marker_goal.pose.orientation.z = 0.0
-		marker_goal.pose.orientation.w = 1.0
-		marker_goal.scale.x = 0.2
-		marker_goal.scale.y = 0.2
-		marker_goal.scale.z = 0.5
-		marker_goal.color.a = 1.0
-		marker_goal.color.r = 0.0
-		marker_goal.color.g = 1.0
-		marker_goal.color.b = 0.0
-
-		self.goal_pub.publish(marker_goal)
 
 ############################### MAIN PROGRAM ####################################
 if __name__ == "__main__":

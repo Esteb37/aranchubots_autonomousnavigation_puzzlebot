@@ -28,6 +28,7 @@ class KalmanFilter():
 		self.dt = dt
 		self.mu = mu
 		self.sigma = np.eye(3)
+		self.I = np.identity(3)
 
 	def h(self, prev_mu, u):
 		v, w = u
@@ -75,9 +76,9 @@ class KalmanFilter():
 
 	def correct(self, m, z, R):
 		z_pred = self.g(self.mu_pred, m)
-		G = self.G(self.mu_pred, m)
+		G = self.G(self.mu, m)
 		Z = G.dot(self.sigma_pred).dot(G.T) + R
 		K = self.sigma_pred.dot(G.T).dot(np.linalg.inv(Z))
 		self.mu = self.mu_pred + K.dot(z - z_pred)
-		self.sigma = (np.identity(3) - K.dot(G)).dot(self.sigma_pred)
+		self.sigma = (self.I - K.dot(G)).dot(self.sigma_pred)
 		return self.mu, self.sigma
