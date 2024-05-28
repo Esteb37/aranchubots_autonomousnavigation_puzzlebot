@@ -40,9 +40,6 @@
 
 		<node pkg="aranchubots_autonomousnavigation_puzzlebot" type="yaml_to_camera_info_publisher.py" name="yaml_to_camera_info_publisher"/>
     	<node pkg="aranchubots_autonomousnavigation_puzzlebot" type="aruco.py" name="aruco" output="screen"/>
-    	
+
 		<node pkg="image_transport" type="republish" name="compress_img" args="raw in:=/video_source/raw compressed out:=/camera/image"/>
-
-		<node type="rviz" name="rviz" pkg="rviz" args="-d $(find aranchubots_autonomousnavigation_puzzlebot)/rviz/bug0.rviz"/>
-
     </launch>

@@ -134,10 +134,70 @@
       </link>
     </model>
     <state world_name='default'>
-      <sim_time>205 441000000</sim_time>
-      <real_time>111 340556617</real_time>
-      <wall_time>1716870739 240259233</wall_time>
-      <iterations>108758</iterations>
+      <sim_time>603 838000000</sim_time>
+      <real_time>429 973320654</real_time>
+      <wall_time>1716940318 56782550</wall_time>
+      <iterations>398397</iterations>
+      <model name='aruco_marker_1'>
+        <pose>1.7374 -0.8 0.1 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>1.7374 -0.8 0.1 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='aruco_marker_2'>
+        <pose>2.9 -2 0.1 0 -0 1.6</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>2.9 -2 0.1 0 -0 1.6</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='aruco_marker_3'>
+        <pose>2.9 -0.02 0.1 0 0 -1.59</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>2.9 -0.02 0.1 0 0 -1.59</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='aruco_marker_4'>
+        <pose>2.571 -1.7 0.1 0 -0 3.08318</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>2.571 -1.7 0.1 0 -0 3.08318</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='aruco_marker_5'>
+        <pose>0.01 -0.3 0.1 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>0.01 -0.3 0.1 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='aruco_marker_6'>
+        <pose>0.01 -1 0.1 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>0.01 -1 0.1 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
       <model name='ground_plane'>
         <pose>0 0 0 0 -0 0</pose>
         <scale>1 1 1</scale>
@@ -164,10 +224,532 @@
     </state>
     <gui fullscreen='0'>
       <camera name='user_camera'>
-        <pose>0.943343 -1.05161 9.82141 -1e-06 1.5418 1.49219</pose>
+        <pose>4.88674 -0.333939 3.75659 0 0.857798 -3.08303</pose>
         <view_controller>orbit</view_controller>
         <projection_type>perspective</projection_type>
       </camera>
     </gui>
+    <model name='aruco_marker_1'>
+      <pose>1.7374 -0.7858 0 0 -0 0</pose>
+      <static>1</static>
+      <link name='link'>
+        <inertial>
+          <pose>0 0 0 0 -0 0</pose>
+          <mass>0.281</mass>
+          <inertia>
+            <ixx>0.0006167</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0006167</iyy>
+            <iyz>0</iyz>
+            <izz>0.0006167</izz>
+          </inertia>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.001 0.18 0.18</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode>
+                <max_vel>1</max_vel>
+                <min_depth>0.001</min_depth>
+                <kp>1e+06</kp>
+                <kd>10</kd>
+              </ode>
+            </contact>
+            <friction>
+              <ode>
+                <mu>1</mu>
+                <mu2>1</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='box_visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <box>
+              <size>0.001 0.18 0.18</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/White</name>
+            </script>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <emissive>0 0 0 1</emissive>
+          </material>
+        </visual>
+        <visual name='aruco_visual1'>
+          <cast_shadows>0</cast_shadows>
+          <pose>0.00065 0 0 1.5708 -0 1.5708</pose>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>0.14 0.14</size>
+            </plane>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/mcr2_materials.material</uri>
+              <name>mcr2_materials/aruco_marker0</name>
+            </script>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <emissive>0 0 0 1</emissive>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+    </model>
+    <model name='aruco_marker_2'>
+      <pose>2.89729 -0.398048 0 0 -0 0</pose>
+      <static>1</static>
+      <link name='link'>
+        <inertial>
+          <pose>0 0 0 0 -0 0</pose>
+          <mass>0.281</mass>
+          <inertia>
+            <ixx>0.0006167</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0006167</iyy>
+            <iyz>0</iyz>
+            <izz>0.0006167</izz>
+          </inertia>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.001 0.18 0.18</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode>
+                <max_vel>1</max_vel>
+                <min_depth>0.001</min_depth>
+                <kp>1e+06</kp>
+                <kd>10</kd>
+              </ode>
+            </contact>
+            <friction>
+              <ode>
+                <mu>1</mu>
+                <mu2>1</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='box_visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <box>
+              <size>0.001 0.18 0.18</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/White</name>
+            </script>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <emissive>0 0 0 1</emissive>
+          </material>
+        </visual>
+        <visual name='aruco_visual1'>
+          <cast_shadows>0</cast_shadows>
+          <pose>0.00065 0 0 1.5708 -0 1.5708</pose>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>0.14 0.14</size>
+            </plane>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/mcr2_materials.material</uri>
+              <name>mcr2_materials/aruco_marker1</name>
+            </script>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <emissive>0 0 0 1</emissive>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+    </model>
+    <model name='aruco_marker_3'>
+      <pose>1.37369 -2.47199 0 0 -0 0</pose>
+      <static>1</static>
+      <link name='link'>
+        <inertial>
+          <pose>0 0 0 0 -0 0</pose>
+          <mass>0.281</mass>
+          <inertia>
+            <ixx>0.0006167</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0006167</iyy>
+            <iyz>0</iyz>
+            <izz>0.0006167</izz>
+          </inertia>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.001 0.18 0.18</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode>
+                <max_vel>1</max_vel>
+                <min_depth>0.001</min_depth>
+                <kp>1e+06</kp>
+                <kd>10</kd>
+              </ode>
+            </contact>
+            <friction>
+              <ode>
+                <mu>1</mu>
+                <mu2>1</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='box_visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <box>
+              <size>0.001 0.18 0.18</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/White</name>
+            </script>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <emissive>0 0 0 1</emissive>
+          </material>
+        </visual>
+        <visual name='aruco_visual1'>
+          <cast_shadows>0</cast_shadows>
+          <pose>0.00065 0 0 1.5708 -0 1.5708</pose>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>0.14 0.14</size>
+            </plane>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/mcr2_materials.material</uri>
+              <name>mcr2_materials/aruco_marker2</name>
+            </script>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <emissive>0 0 0 1</emissive>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+    </model>
+    <model name='aruco_marker_4'>
+      <pose>2.07777 -2.17668 0 0 -0 0</pose>
+      <static>1</static>
+      <link name='link'>
+        <inertial>
+          <pose>0 0 0 0 -0 0</pose>
+          <mass>0.281</mass>
+          <inertia>
+            <ixx>0.0006167</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0006167</iyy>
+            <iyz>0</iyz>
+            <izz>0.0006167</izz>
+          </inertia>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.001 0.18 0.18</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode>
+                <max_vel>1</max_vel>
+                <min_depth>0.001</min_depth>
+                <kp>1e+06</kp>
+                <kd>10</kd>
+              </ode>
+            </contact>
+            <friction>
+              <ode>
+                <mu>1</mu>
+                <mu2>1</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='box_visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <box>
+              <size>0.001 0.18 0.18</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/White</name>
+            </script>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <emissive>0 0 0 1</emissive>
+          </material>
+        </visual>
+        <visual name='aruco_visual1'>
+          <cast_shadows>0</cast_shadows>
+          <pose>0.00065 0 0 1.5708 -0 1.5708</pose>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>0.14 0.14</size>
+            </plane>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/mcr2_materials.material</uri>
+              <name>mcr2_materials/aruco_marker3</name>
+            </script>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <emissive>0 0 0 1</emissive>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+    </model>
+    <model name='aruco_marker_5'>
+      <pose>1.77396 -1.93072 0 0 -0 0</pose>
+      <static>1</static>
+      <link name='link'>
+        <inertial>
+          <pose>0 0 0 0 -0 0</pose>
+          <mass>0.281</mass>
+          <inertia>
+            <ixx>0.0006167</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0006167</iyy>
+            <iyz>0</iyz>
+            <izz>0.0006167</izz>
+          </inertia>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.001 0.18 0.18</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode>
+                <max_vel>1</max_vel>
+                <min_depth>0.001</min_depth>
+                <kp>1e+06</kp>
+                <kd>10</kd>
+              </ode>
+            </contact>
+            <friction>
+              <ode>
+                <mu>1</mu>
+                <mu2>1</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='box_visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <box>
+              <size>0.001 0.18 0.18</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/White</name>
+            </script>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <emissive>0 0 0 1</emissive>
+          </material>
+        </visual>
+        <visual name='aruco_visual1'>
+          <cast_shadows>0</cast_shadows>
+          <pose>0.00065 0 0 1.5708 -0 1.5708</pose>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>0.14 0.14</size>
+            </plane>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/mcr2_materials.material</uri>
+              <name>mcr2_materials/aruco_marker4</name>
+            </script>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <emissive>0 0 0 1</emissive>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+    </model>
+    <model name='aruco_marker_6'>
+      <pose>0.743002 -1.51575 0 0 -0 0</pose>
+      <static>1</static>
+      <link name='link'>
+        <inertial>
+          <pose>0 0 0 0 -0 0</pose>
+          <mass>0.281</mass>
+          <inertia>
+            <ixx>0.0006167</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0006167</iyy>
+            <iyz>0</iyz>
+            <izz>0.0006167</izz>
+          </inertia>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.001 0.18 0.18</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode>
+                <max_vel>1</max_vel>
+                <min_depth>0.001</min_depth>
+                <kp>1e+06</kp>
+                <kd>10</kd>
+              </ode>
+            </contact>
+            <friction>
+              <ode>
+                <mu>1</mu>
+                <mu2>1</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='box_visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <box>
+              <size>0.001 0.18 0.18</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/White</name>
+            </script>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <emissive>0 0 0 1</emissive>
+          </material>
+        </visual>
+        <visual name='aruco_visual1'>
+          <cast_shadows>0</cast_shadows>
+          <pose>0.00065 0 0 1.5708 -0 1.5708</pose>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>0.14 0.14</size>
+            </plane>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/mcr2_materials.material</uri>
+              <name>mcr2_materials/aruco_marker5</name>
+            </script>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <emissive>0 0 0 1</emissive>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+    </model>
   </world>
 </sdf>

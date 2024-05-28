@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 import rospy
 from geometry_msgs.msg import Twist, PoseStamped
 from visualization_msgs.msg import Marker
@@ -38,18 +38,16 @@ class AutonomousNav():
 
 		closest_angle = 0.0 #Angle to the closest object
 		closest_range = 0.0 #Distance to the closest object
-		ao_distance = 0.2 # distance from closest obstacle to activate the avoid obstacle behavior [m]
+		ao_distance = 0.23 # distance from closest obstacle to activate the avoid obstacle behavior [m]
 		stop_distance = 0.1 # distance from closest obstacle to stop the robot [m]
 
 		v_msg = Twist() # Robot's desired speed
-		v_msg.linear.x = 0.2
-		v_msg.angular.z = 0.0
 		current_state = 'Stop' # Robot's current state
 		theta_AO = 0.0
 		hit_distance = 0
 
 		###******* INIT PUBLISHERS *******###
-		self.pub_cmd_vel = rospy.Publisher('/base_controller/cmd_vel', Twist, queue_size=1)
+		self.pub_cmd_vel = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
 		pub_theta_gtg = rospy.Publisher('theta_gtg', PoseStamped, queue_size=1)
 		pub_theta_AO = rospy.Publisher('theta_AO', PoseStamped, queue_size=1)
 		pub_closest_object = rospy.Publisher('closest_object', Marker, queue_size=1)
@@ -267,8 +265,8 @@ class AutonomousNav():
 
 	def compute_gtg_control(self, x_target, y_target, x_robot, y_robot, theta_robot):
 		# This function returns the linear and angular speed to reach a given goal
-		kvmax = 0.2  # linear speed maximum gain
-		kwmax = 1.0  # angular angular speed maximum gain
+		kvmax = 0.15  # linear speed maximum gain
+		kwmax = 0.5  # angular angular speed maximum gain
 		av = 2.0  # Constant to adjust the exponential's growth rate
 		aw = 2.0  # Constant to adjust the exponential's growth rate
 		ed = np.sqrt((x_target - x_robot)**2 + (y_target - y_robot)**2)
