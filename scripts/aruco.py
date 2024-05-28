@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 import rospy
 from fiducial_msgs.msg import FiducialTransformArray
-from std_msgs.msg import Float32MultiArray, Int32
+from std_msgs.msg import Float32MultiArray
+from geometry_msgs.msg import Quaternion, Vector3
 import numpy as np
 import math
 import tf.transformations as tft
@@ -12,47 +13,49 @@ class Aruco():
 
         rospy.Subscriber("/fiducial_transforms", FiducialTransformArray, self.fiducial_callback)
 
-        position = rospy.Publisher('/position', Float32MultiArray, queue_size=1)
-        marker = rospy.Publisher('/position', Int32, queue_size=1)
+        self.position = rospy.Publisher('/position', Float32MultiArray, queue_size=1)
 
-        rospy.spin()
-
-        self.translation = 0.0
-        self.rotation = 0.0
+        self.marker_id = 0.0
+        self.translation = Vector3()
+        self.rotation = Quaternion()
         self.image_error = 0.0
         self.object_error = 0.0
         self.fiducial_area = 0.0
 
-        dt = 0.02
-        rate = rospy.Rate(int(0.5/dt))
+        position_msg = Float32MultiArray()
+
+        rate = rospy.Rate(1/0.2)
         while not rospy.is_shutdown():
+            if self.marker_id != 0:
+                # Transformar la posicion del marco del robot usando la traslacion
+                position_robot = self.transform_to_robot_frame()
 
-            # Transformar la posicion del marco del robot usando la traslacion
-            position_robot = self.transform_to_robot_frame()
+                # Calcular la distancia y el angulo
+                distance, angle = self.calculate_distance_and_angle(position_robot)
 
-            # Calcular la distancia y el angulo
-            distance, angle = self.calculate_distance_and_angle(position_robot)
+                # Imprimir la informacion de manera estructurada
+                rospy.loginfo("fiducial_id: %d", self.marker_id)
+                rospy.loginfo("transform:")
+                rospy.loginfo("  translation:")
+                rospy.loginfo("    x: %f", self.translation.x)
+                rospy.loginfo("    y: %f", self.translation.y)
+                rospy.loginfo("    z: %f", self.translation.z)
+                rospy.loginfo("  rotation:")
+                rospy.loginfo("    x: %f", self.rotation.x)
+                rospy.loginfo("    y: %f", self.rotation.y)
+                rospy.loginfo("    z: %f", self.rotation.z)
+                rospy.loginfo("    w: %f", self.rotation.w)
+                rospy.loginfo("image_error: %f", self.image_error)
+                rospy.loginfo("object_error: %f", self.object_error)
+                rospy.loginfo("fiducial_area: %f", self.fiducial_area)
+                rospy.loginfo("Position in Robot Frame: x: %f, y: %f, z: %f", position_robot[0], position_robot[1], position_robot[2])
+                rospy.loginfo("Distance: %f, Angle: %f", distance, angle)
 
-            # Imprimir la informacion de manera estructurada
-            rospy.loginfo("fiducial_id: %d", self.marker_id)
-            rospy.loginfo("transform:")
-            rospy.loginfo("  translation:")
-            rospy.loginfo("    x: %f", self.translation.x)
-            rospy.loginfo("    y: %f", self.translation.y)
-            rospy.loginfo("    z: %f", self.translation.z)
-            rospy.loginfo("  rotation:")
-            rospy.loginfo("    x: %f", self.rotation.x)
-            rospy.loginfo("    y: %f", self.rotation.y)
-            rospy.loginfo("    z: %f", self.rotation.z)
-            rospy.loginfo("    w: %f", self.rotation.w)
-            rospy.loginfo("image_error: %f", self.image_error)
-            rospy.loginfo("object_error: %f", self.object_error)
-            rospy.loginfo("fiducial_area: %f", self.fiducial_area)
-            rospy.loginfo("Position in Robot Frame: x: %f, y: %f, z: %f", position_robot[0], position_robot[1], position_robot[2])
-            rospy.loginfo("Distance: %f, Angle: %f", distance, angle)
+                position_msg.data = [distance, angle, float(self.marker_id)]
+                self.position.publish(position_msg)
 
-            position.publish([distance, angle])
-            marker.publish(self.marker_id)
+            self.marker_id = 0
+            
             rate.sleep()
 
 
@@ -78,7 +81,9 @@ class Aruco():
 
 
     def fiducial_callback(self, data):
-        for transform in data.transforms:
+        if len(data.transforms) != 0:
+            transform = data.transforms[0]
+
             self.marker_id = transform.fiducial_id
             self.translation = transform.transform.translation
             self.rotation = transform.transform.rotation
