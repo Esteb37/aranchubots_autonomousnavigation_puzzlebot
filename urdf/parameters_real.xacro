@@ -23,8 +23,8 @@
 <xacro:property name="cameraX" value="0.02"/>
 <xacro:property name="cameraY" value="0.04"/>
 <xacro:property name="cameraZ" value="0.06"/>
-<xacro:property name="mesh_chassis"  value="/home/estebanpadilla/catkin_ws/src/aranchubots_autonomousnavigation_puzzlebot/meshes/chassis.stl" />
-<xacro:property name="mesh_wheel"  value="/home/estebanpadilla/catkin_ws/src/aranchubots_autonomousnavigation_puzzlebot/meshes/wheel.stl" />
-<xacro:property name="mesh_camera"  value="/home/estebanpadilla/catkin_ws/src/aranchubots_autonomousnavigation_puzzlebot/meshes/camera.stl" />
+<xacro:property name="mesh_chassis"  value="/home/esteb37/catkin_ws/src/aranchubots_autonomousnavigation_puzzlebot/meshes/chassis.stl" />
+<xacro:property name="mesh_wheel"  value="/home/esteb37/catkin_ws/src/aranchubots_autonomousnavigation_puzzlebot/meshes/wheel.stl" />
+<xacro:property name="mesh_camera"  value="/home/esteb37/catkin_ws/src/aranchubots_autonomousnavigation_puzzlebot/meshes/camera.stl" />
 
 </robot>

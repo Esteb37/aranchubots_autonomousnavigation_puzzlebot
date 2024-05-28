@@ -134,10 +134,10 @@
       </link>
     </model>
     <state world_name='default'>
-      <sim_time>96 683000000</sim_time>
-      <real_time>96 839955405</real_time>
-      <wall_time>1714780137 942618384</wall_time>
-      <iterations>96683</iterations>
+      <sim_time>205 441000000</sim_time>
+      <real_time>111 340556617</real_time>
+      <wall_time>1716870739 240259233</wall_time>
+      <iterations>108758</iterations>
       <model name='ground_plane'>
         <pose>0 0 0 0 -0 0</pose>
         <scale>1 1 1</scale>
@@ -149,10 +149,10 @@
         </link>
       </model>
       <model name='simulation_map'>
-        <pose>-1.59125 -0.009932 0 0 -0 0</pose>
+        <pose>-0.013072 -0.009932 0 0 -0 0</pose>
         <scale>1 1 1</scale>
         <link name='walls'>
-          <pose>-1.59125 -0.009932 0 0 -0 0</pose>
+          <pose>-0.013072 -0.009932 0 0 -0 0</pose>
           <velocity>0 0 0 0 -0 0</velocity>
           <acceleration>0 0 0 0 -0 0</acceleration>
           <wrench>0 0 0 0 -0 0</wrench>
@@ -164,7 +164,7 @@
     </state>
     <gui fullscreen='0'>
       <camera name='user_camera'>
-        <pose>0.181804 -1.54834 6.50052 0 1.5418 1.49219</pose>
+        <pose>0.943343 -1.05161 9.82141 -1e-06 1.5418 1.49219</pose>
         <view_controller>orbit</view_controller>
         <projection_type>perspective</projection_type>
       </camera>

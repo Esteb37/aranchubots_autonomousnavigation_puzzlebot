@@ -196,6 +196,16 @@ class AutonomousNav():
 			marker_mode.scale.x = ao_distance*2
 			marker_mode.scale.y = ao_distance*2
 			marker_mode.scale.z = 0.01
+
+			marker_mode.pose.position.x = 0
+			marker_mode.pose.position.y = 0
+			marker_mode.pose.position.z = 0
+			marker_mode.pose.orientation.x = 0.0
+
+			marker_mode.pose.orientation.y = 0.0
+			marker_mode.pose.orientation.z = 0.0
+			marker_mode.pose.orientation.w = 1.0
+
 			marker_mode.color.a = 1.0
 			marker_mode.color.r = 1.0 if current_state == 'GoToGoal' else 0.0
 			marker_mode.color.g = 1.0 if current_state == 'GoToGoal' else 0.0
