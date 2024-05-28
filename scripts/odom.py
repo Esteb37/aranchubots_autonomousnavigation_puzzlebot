@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 import rospy
-from geometry_msgs.msg import Pose
-from visualization_msgs.msg import Marker
+from visualization_msgs.msg import Marker, MarkerArray
 from nav_msgs.msg import Odometry
-from std_msgs.msg import Float32
+from std_msgs.msg import Float32, Float32MultiArray
 from tf.transformations import quaternion_from_euler
 import tf2_ros
 from geometry_msgs.msg import TransformStamped
@@ -26,7 +25,7 @@ class PuzzlebotLocClass():
 		############################### SUBSCRIBERS #####################################
 		rospy.Subscriber("/wl", Float32, self.wl_cb)
 		rospy.Subscriber("/wr", Float32, self.wr_cb)
-		rospy.Subscriber("/aruco", Float32, self.aruco_cb)
+		rospy.Subscriber("/aruco", Float32MultiArray, self.aruco_cb)
 
 		x_init = rospy.get_param('/odom_node/pos_x', 0)
 		y_init = rospy.get_param('/odom_node/pos_y', 0)
@@ -35,6 +34,7 @@ class PuzzlebotLocClass():
 		# Publishers
 		self.odom_pub = rospy.Publisher('/odom', Odometry, queue_size=1)
 		self.goal_pub = rospy.Publisher('/goal_marker', Marker, queue_size=1)
+		self.aruco_pub = rospy.Publisher('/aruco_markers', MarkerArray, queue_size=1)
 		self.tf_broadcaster = tf2_ros.TransformBroadcaster()
 
 		############ ROBOT CONSTANTS ################
@@ -96,7 +96,7 @@ class PuzzlebotLocClass():
 
 			self.publish_transforms(mu)
 
-			self.publish_goal_marker()
+			self.publish_aruco_markers()
 
 			rate.sleep()
 
@@ -105,7 +105,6 @@ class PuzzlebotLocClass():
 
 	def wr_cb(self, msg):
 		self.wr = msg.data
-
 
 	def aruco_cb(self, msg):
 		self.aruco_id = int(msg.data[2])
@@ -189,30 +188,35 @@ class PuzzlebotLocClass():
 
 		self.tf_broadcaster.sendTransform(t)
 
-	def publish_goal_marker(self, x, y):
-		marker_goal = Marker()
-		marker_goal.header.frame_id = "odom"
-		marker_goal.header.stamp = rospy.Time.now()
-		marker_goal.ns = "goal_marker"
-		marker_goal.id = 0
-		marker_goal.type = Marker.CUBE
-		marker_goal.action = Marker.ADD
-		marker_goal.pose.position.x = x
-		marker_goal.pose.position.y = y
-		marker_goal.pose.position.z = 0
-		marker_goal.pose.orientation.x = 0.0
-		marker_goal.pose.orientation.y = 0.0
-		marker_goal.pose.orientation.z = 0.0
-		marker_goal.pose.orientation.w = 1.0
-		marker_goal.scale.x = 0.2
-		marker_goal.scale.y = 0.2
-		marker_goal.scale.z = 0.5
-		marker_goal.color.a = 1.0
-		marker_goal.color.r = 0.0
-		marker_goal.color.g = 1.0
-		marker_goal.color.b = 0.0
+	def publish_aruco_markers(self):
+		marker_array = MarkerArray()
+		for idx, marker in MarkerLocations.items():
+			m = Marker()
+			m.header.frame_id = "map"
+			m.header.stamp = rospy.Time.now()
+			m.ns = "aruco"
+			m.id = idx
+			m.type = m.CUBE
+			m.action = m.ADD
+			m.pose.position.x = marker[0]
+			m.pose.position.y = marker[1]
+			m.pose.position.z = 0.083 + 0.097 / 2
+			m.pose.orientation.x = 0.0
+			m.pose.orientation.y = 0.0
+			m.pose.orientation.z = 0.0
+			m.pose.orientation.w = 1.0
+			m.scale.x = 0.097
+			m.scale.y = 0.097
+			m.scale.z = 0.097
+			m.color.a = 1.0
+			m.color.r = 1.0
+			m.color.g = 1.0
+			m.color.b = 1.0
+			m.lifetime = rospy.Duration(1)
+			marker_array.markers.append(m)
 
-		self.goal_pub.publish(marker_goal)
+		self.aruco_pub.publish(marker_array)
+
 
 ############################### MAIN PROGRAM ####################################
 if __name__ == "__main__":

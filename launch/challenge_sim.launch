@@ -9,9 +9,6 @@
 		<arg name="pos_y" default="-0.27"/>
 		<arg name="pos_theta" default="0.0"/>
 
-		<arg name="goal_x" default="2.93"/>
-		<arg name="goal_y" default="-1.62"/>
-
 		<arg name="eps" default="0.2"/>
 
         <!-- Gazebo Parameters -->
@@ -48,13 +45,9 @@
 			<param name="pos_x" value="$(arg pos_x)" />
 			<param name="pos_y" value="$(arg pos_y)" />
 			<param name="pos_theta" value="$(arg pos_theta)" />
-			<param name="goal_x" value="$(arg goal_x)" />
-			<param name="goal_y" value="$(arg goal_y)" />
 		</node>
 
 		<node pkg="aranchubots_autonomousnavigation_puzzlebot" type="bug2_sim.py" name="bug2" output="screen">
-			<param name="goal_x" value="$(arg goal_x)" />
-			<param name="goal_y" value="$(arg goal_y)" />
 			<param name="eps" value="$(arg eps)" />
 		</node>
 
