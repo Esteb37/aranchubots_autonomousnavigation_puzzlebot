@@ -6,7 +6,7 @@ from nav_msgs.msg import Odometry
 from std_msgs.msg import Float32
 from tf.transformations import quaternion_from_euler
 import tf2_ros
-from geometry_msgs.msg import TransformStamped, Twist
+from geometry_msgs.msg import TransformStamped
 import numpy as np
 from utils.KF import KalmanFilter
 from utils.aruco_markers import MarkerLocations
@@ -100,7 +100,6 @@ class PuzzlebotLocClass():
 			self.publish_transforms(mu)
 
 			self.publish_goal_marker(x_target, y_target)
-
 
 			rate.sleep()
 
@@ -217,9 +216,6 @@ class PuzzlebotLocClass():
 		marker_goal.color.b = 0.0
 
 		self.goal_pub.publish(marker_goal)
-
-
-
 
 ############################### MAIN PROGRAM ####################################
 if __name__ == "__main__":

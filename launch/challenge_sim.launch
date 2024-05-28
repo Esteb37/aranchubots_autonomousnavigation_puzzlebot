@@ -52,12 +52,11 @@
 			<param name="goal_y" value="$(arg goal_y)" />
 		</node>
 
-
-		<!--node pkg="aranchubots_autonomousnavigation_puzzlebot" type="bug2_sim.py" name="bug2" output="screen">
+		<node pkg="aranchubots_autonomousnavigation_puzzlebot" type="bug2_sim.py" name="bug2" output="screen">
 			<param name="goal_x" value="$(arg goal_x)" />
 			<param name="goal_y" value="$(arg goal_y)" />
 			<param name="eps" value="$(arg eps)" />
-		</!node-->
+		</node>
 
 		<arg name="map_file" default="$(find aranchubots_autonomousnavigation_puzzlebot)/maps/map.yaml"/>
     	<node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
