@@ -38,7 +38,7 @@ class AutonomousNav():
 
 		closest_angle = 0.0 #Angle to the closest object
 		closest_range = 0.0 #Distance to the closest object
-		ao_distance = 0.23 # distance from closest obstacle to activate the avoid obstacle behavior [m]
+		ao_distance = 0.3 # distance from closest obstacle to activate the avoid obstacle behavior [m]
 		stop_distance = 0.1 # distance from closest obstacle to stop the robot [m]
 
 		v_msg = Twist() # Robot's desired speed
@@ -287,7 +287,7 @@ class AutonomousNav():
 		return v, w
 
 	def compute_fw_control(self, closest_angle, clockwise):
-		kAO = 1.5 # Proportional constant for the angular speed controller
+		kAO = 1 # Proportional constant for the angular speed controller
 		closest_angle = self.normalize_angle(closest_angle)
 		if clockwise:
 			theta_fw = self.get_theta_AO(closest_angle) - np.pi/2
@@ -300,7 +300,7 @@ class AutonomousNav():
 		if abs(theta_fw) > np.pi / 2:
 			v = 0
 		else:
-			v = 0.17
+			v = 0.13
 
 		return v, w
 

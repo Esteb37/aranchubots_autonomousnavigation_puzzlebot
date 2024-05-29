@@ -13,7 +13,7 @@ class Aruco():
 
         rospy.Subscriber("/fiducial_transforms", FiducialTransformArray, self.fiducial_callback)
 
-        self.position = rospy.Publisher('/position', Float32MultiArray, queue_size=1)
+        self.position = rospy.Publisher('/aruco', Float32MultiArray, queue_size=1)
 
         self.marker_id = 0.0
         self.translation = Vector3()
@@ -34,28 +34,29 @@ class Aruco():
                 distance, angle = self.calculate_distance_and_angle(position_robot)
 
                 # Imprimir la informacion de manera estructurada
-                rospy.loginfo("fiducial_id: %d", self.marker_id)
-                rospy.loginfo("transform:")
-                rospy.loginfo("  translation:")
-                rospy.loginfo("    x: %f", self.translation.x)
-                rospy.loginfo("    y: %f", self.translation.y)
-                rospy.loginfo("    z: %f", self.translation.z)
-                rospy.loginfo("  rotation:")
-                rospy.loginfo("    x: %f", self.rotation.x)
-                rospy.loginfo("    y: %f", self.rotation.y)
-                rospy.loginfo("    z: %f", self.rotation.z)
-                rospy.loginfo("    w: %f", self.rotation.w)
-                rospy.loginfo("image_error: %f", self.image_error)
-                rospy.loginfo("object_error: %f", self.object_error)
-                rospy.loginfo("fiducial_area: %f", self.fiducial_area)
-                rospy.loginfo("Position in Robot Frame: x: %f, y: %f, z: %f", position_robot[0], position_robot[1], position_robot[2])
-                rospy.loginfo("Distance: %f, Angle: %f", distance, angle)
+                print("fiducial_id: %d", self.marker_id)
+                print("transform:")
+                print("  translation:")
+                print("    x: %f", self.translation.x)
+                print("    y: %f", self.translation.y)
+                print("    z: %f", self.translation.z)
+                print("  rotation:")
+                print("    x: %f", self.rotation.x)
+                print("    y: %f", self.rotation.y)
+                print("    z: %f", self.rotation.z)
+                print("    w: %f", self.rotation.w)
+                print("image_error: %f", self.image_error)
+                print("object_error: %f", self.object_error)
+                print("fiducial_area: %f", self.fiducial_area)
+                print("Position in Robot Frame: x: %f, y: %f, z: %f", position_robot[0], position_robot[1], position_robot[2])
+                print("Distance: %f, Angle: %f", distance, angle)
 
-                position_msg.data = [distance, angle, float(self.marker_id)]
-                self.position.publish(position_msg)
+                if distance < np.inf:
+                    position_msg.data = [distance, angle, float(self.marker_id)]
+                    self.position.publish(position_msg)
 
             self.marker_id = 0
-            
+
             rate.sleep()
 
 
@@ -76,7 +77,7 @@ class Aruco():
 
     def calculate_distance_and_angle(self, position_robot):
         distance = math.sqrt(position_robot[0]**2 + position_robot[1]**2 + position_robot[2]**2)
-        angle = math.atan2(position_robot[1], position_robot[0])
+        angle = - math.atan2(position_robot[1], position_robot[0])
         return distance, angle
 
 

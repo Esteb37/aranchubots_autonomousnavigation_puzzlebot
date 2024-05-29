@@ -76,9 +76,10 @@ class KalmanFilter():
 
 	def correct(self, m, z, R):
 		z_pred = self.g(self.mu_pred, m)
+		print(z, z_pred, self.mu_pred)
 		G = self.G(self.mu, m)
 		Z = G.dot(self.sigma_pred).dot(G.T) + R
 		K = self.sigma_pred.dot(G.T).dot(np.linalg.inv(Z))
 		self.mu = self.mu_pred + K.dot(z - z_pred)
 		self.sigma = (self.I - K.dot(G)).dot(self.sigma_pred)
-		return self.mu, self.sigma
+		return self.mu_pred, self.sigma_pred
