@@ -17,6 +17,8 @@
 
 		<arg name="eps" default="0.2"/>
 
+		<arg name="is_sim" default="false" />
+
 		<include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/include/robot/description_real.launch"/>
 		<include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/include/aruco/aruco_detect.launch"/>
 
@@ -26,20 +28,25 @@
 			<param name="pos_theta" value="$(arg pos_theta)" />
 			<param name="goal_x" value="$(arg goal_x)" />
 			<param name="goal_y" value="$(arg goal_y)" />
+			<param name="is_sim" value="$(arg is_sim)" />
 		</node>
 
 
 		<node pkg="aranchubots_autonomousnavigation_puzzlebot" type="bug2.py" name="bug2" output="screen">
-			<param name="goal_x" value="$(arg goal_x)" />
-			<param name="goal_y" value="$(arg goal_y)" />
 			<param name="eps" value="$(arg eps)" />
+			<param name="is_sim" value="$(arg is_sim)" />
 		</node>
 
 		<arg name="map_file" default="$(find aranchubots_autonomousnavigation_puzzlebot)/maps/map.yaml"/>
     	<node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
 
-		<node pkg="aranchubots_autonomousnavigation_puzzlebot" type="yaml_to_camera_info_publisher.py" name="yaml_to_camera_info_publisher"/>
-    	<node pkg="aranchubots_autonomousnavigation_puzzlebot" type="aruco.py" name="aruco"/>
+		<node pkg="aranchubots_autonomousnavigation_puzzlebot" type="yaml_to_camera_info_publisher.py" name="yaml_to_camera_info_publisher">
+			<param name="is_sim" value="$(arg is_sim)" />
+		</node>
+
+    	<node pkg="aranchubots_autonomousnavigation_puzzlebot" type="aruco.py" name="aruco">
+			<param name="is_sim" value="$(arg is_sim)" />
+		</node>
 
 		<node pkg="image_transport" type="republish" name="compress_img" args="raw in:=/video_source/raw compressed out:=/camera/image"/>
     </launch>

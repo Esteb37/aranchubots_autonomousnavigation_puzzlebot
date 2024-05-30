@@ -26,13 +26,16 @@ class PuzzlebotLocClass():
 
 		# Subscribers
 		############################### SUBSCRIBERS #####################################
-		rospy.Subscriber("/wl", Float32, self.wl_cb)
-		rospy.Subscriber("/wr", Float32, self.wr_cb)
-		rospy.Subscriber("/aruco", Float32MultiArray, self.aruco_cb)
-
 		x_init = rospy.get_param('/odom_node/pos_x', 0)
 		y_init = rospy.get_param('/odom_node/pos_y', 0)
 		theta_init = rospy.get_param('/odom_node/pos_theta', 0)
+		is_sim = rospy.get_param("/odom_node/is_sim", False)
+
+		prefix = "" if not is_sim else "/puzzlebot_1"
+		rospy.Subscriber(prefix+"/wl", Float32, self.wl_cb)
+		rospy.Subscriber(prefix+"/wr", Float32, self.wr_cb)
+		rospy.Subscriber("/aruco", Float32MultiArray, self.aruco_cb)
+
 
 		# Publishers
 		self.odom_pub = rospy.Publisher('/odom', Odometry, queue_size=1)
@@ -65,7 +68,7 @@ class PuzzlebotLocClass():
 
 		KF = KalmanFilter(DT, mu)
 
-		rate = rospy.Rate(100)
+		rate = rospy.Rate(int(1 / DT))
 
 		rospy.on_shutdown(self.on_kill)
 

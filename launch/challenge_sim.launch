@@ -11,6 +11,8 @@
 
 		<arg name="eps" default="0.2"/>
 
+		<arg name="is_sim" default="true" />
+
         <!-- Gazebo Parameters -->
         <arg name="world_name" default="$(find aranchubots_autonomousnavigation_puzzlebot)/worlds/first_world.world"/>
         <arg name="paused" default="false"/>
@@ -41,19 +43,31 @@
 
 		<include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/include/robot/description2d.launch"/>
 
-		<node pkg="aranchubots_autonomousnavigation_puzzlebot" type="odom_sim.py" name="odom_node" output="screen">
+		<node pkg="aranchubots_autonomousnavigation_puzzlebot" type="odom.py" name="odom_node" output="screen">
 			<param name="pos_x" value="$(arg pos_x)" />
 			<param name="pos_y" value="$(arg pos_y)" />
 			<param name="pos_theta" value="$(arg pos_theta)" />
+			<param name="is_sim" value="$(arg is_sim)" />
 		</node>
 
-		<node pkg="aranchubots_autonomousnavigation_puzzlebot" type="bug2_sim.py" name="bug2" output="screen">
+		<node pkg="aranchubots_autonomousnavigation_puzzlebot" type="bug2.py" name="bug2" output="screen">
 			<param name="eps" value="$(arg eps)" />
+			<param name="is_sim" value="$(arg is_sim)" />
 		</node>
 
 		<arg name="map_file" default="$(find aranchubots_autonomousnavigation_puzzlebot)/maps/map.yaml"/>
     	<node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
 
 		<node type="rviz" name="rviz" pkg="rviz" args="-d $(find aranchubots_autonomousnavigation_puzzlebot)/rviz/bug0_sim.rviz"/>
+
+		<node pkg="aranchubots_autonomousnavigation_puzzlebot" type="yaml_to_camera_info_publisher.py" name="yaml_to_camera_info_publisher">
+			<param name="is_sim" value="$(arg is_sim)" />
+		</node>
+
+    	<node pkg="aranchubots_autonomousnavigation_puzzlebot" type="aruco.py" name="aruco">
+			<param name="is_sim" value="$(arg is_sim)" />
+		</node>
+
+		<node pkg="image_transport" type="republish" name="compress_img" args="raw in:=/puzzlebot_1/camera/image_raw compressed out:=/camera/image"/>
 
     </launch>

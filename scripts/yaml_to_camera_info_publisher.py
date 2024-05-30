@@ -20,7 +20,11 @@ def yaml_to_CameraInfo(yaml_fname):
     return camera_info_msg
 
 if __name__ == "__main__":
-    filename = "/home/puzzlebot/catkin_ws/src/aranchubots_autonomousnavigation_puzzlebot/include/ost.yaml"
+    is_sim = rospy.get_param("/yaml_to_camera_info_publisher/is_sim", False)
+
+    user = "estebanpadilla" if is_sim else "puzzlebot"
+
+    filename = "/home/"+user+"/catkin_ws/src/aranchubots_autonomousnavigation_puzzlebot/include/ost.yaml"
 
     # Parse yaml file
     camera_info_msg = yaml_to_CameraInfo(filename)

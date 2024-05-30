@@ -24,7 +24,7 @@ class Aruco():
 
 		position_msg = Float32MultiArray()
 
-		rate = rospy.Rate(100)
+		rate = rospy.Rate(50)
 		while not rospy.is_shutdown():
 			if self.marker_id != 0:
 				# Transformar la posicion del marco del robot usando la traslacion
