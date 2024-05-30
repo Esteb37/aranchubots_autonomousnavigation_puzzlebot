@@ -19,6 +19,9 @@ np.set_printoptions(formatter={'float': '{: 0.4f}'.format})
 # publish to /wr and /wl the simulated wheel speed.
 class PuzzlebotLocClass():
 	def __init__(self):
+
+		self.LOG = np.array([])
+
 		rospy.init_node('localisation')
 
 		# Subscribers
@@ -49,7 +52,8 @@ class PuzzlebotLocClass():
 		sigma = np.zeros((3,3))
 
 		Qk = np.zeros((3,3))
-		Rk = np.zeros((2,2))
+		Rk = np.array([[0.1, 0.0],
+			  		   [0.0, 0.02]])
 		covariance = np.zeros((2,3))
 		jacobian = np.zeros((3,2))
 
@@ -61,7 +65,10 @@ class PuzzlebotLocClass():
 
 		KF = KalmanFilter(DT, mu)
 
-		rate = rospy.Rate(int(1/DT))
+		rate = rospy.Rate(100)
+
+		rospy.on_shutdown(self.on_kill)
+
 		while not rospy.is_shutdown():
 
 			WR = self.wr
@@ -151,6 +158,10 @@ class PuzzlebotLocClass():
 		odometry.pose.covariance[31] = sigma[2][1]
 		odometry.pose.covariance[35] = sigma[2][2]
 
+		log = np.array([pose[0], pose[1], pose[2], speed[0], speed[1]])
+		self.LOG = np.append(self.LOG, log)
+
+
 		self.odom_pub.publish(odometry)
 
 	def publish_transforms(self, pose):
@@ -216,6 +227,11 @@ class PuzzlebotLocClass():
 			marker_array.markers.append(m)
 
 		self.aruco_pub.publish(marker_array)
+
+	def on_kill(self):
+		rospy.loginfo("Shutting down node")
+		rospy.signal_shutdown("User shutdown")
+		np.save('log.npy', self.LOG)
 
 
 ############################### MAIN PROGRAM ####################################

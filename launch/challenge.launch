@@ -8,8 +8,8 @@
 		<arg name="image" default="/image_compressed/compressed"/>
     	<arg name="camera_info" default="/camera_info"/>
 
-        <arg name="pos_x" default="0.31"/>
-		<arg name="pos_y" default="-0.27"/>
+        <arg name="pos_x" default="0.325"/>
+		<arg name="pos_y" default="-0.285"/>
 		<arg name="pos_theta" default="0.0"/>
 
 		<arg name="goal_x" default="2.93"/>
@@ -29,11 +29,11 @@
 		</node>
 
 
-		<!--node pkg="aranchubots_autonomousnavigation_puzzlebot" type="bug2.py" name="bug2" output="screen">
+		<node pkg="aranchubots_autonomousnavigation_puzzlebot" type="bug2.py" name="bug2" output="screen">
 			<param name="goal_x" value="$(arg goal_x)" />
 			<param name="goal_y" value="$(arg goal_y)" />
 			<param name="eps" value="$(arg eps)" />
-		</node-->
+		</node>
 
 		<arg name="map_file" default="$(find aranchubots_autonomousnavigation_puzzlebot)/maps/map.yaml"/>
     	<node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />

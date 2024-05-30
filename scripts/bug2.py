@@ -36,6 +36,9 @@ class AutonomousNav():
 		self.wl = 0.0 # left wheel speed [rad/s]
 		self.odom_received = False
 
+		self.max_v = 0.12
+		self.max_w = 0.3
+
 		closest_angle = 0.0 #Angle to the closest object
 		closest_range = 0.0 #Distance to the closest object
 		ao_distance = 0.3 # distance from closest obstacle to activate the avoid obstacle behavior [m]
@@ -60,8 +63,7 @@ class AutonomousNav():
 
 
 		#********** INIT NODE **********###
-		freq = 50
-		rate = rospy.Rate(freq) #freq Hz
+		rate = rospy.Rate(100) #freq Hz
 		rate.sleep()
 
 		prev_angle = 0
@@ -265,7 +267,7 @@ class AutonomousNav():
 
 	def compute_gtg_control(self, x_target, y_target, x_robot, y_robot, theta_robot):
 		# This function returns the linear and angular speed to reach a given goal
-		kvmax = 0.15  # linear speed maximum gain
+		kvmax = 0.12  # linear speed maximum gain
 		kwmax = 0.5  # angular angular speed maximum gain
 		av = 2.0  # Constant to adjust the exponential's growth rate
 		aw = 2.0  # Constant to adjust the exponential's growth rate
@@ -275,6 +277,7 @@ class AutonomousNav():
 		# Compute the robot's angular speed
 		kw = kwmax * (1 - np.exp(-aw * e_theta**2)) / abs(e_theta)
 		w = kw * e_theta
+		v = np.clip(w, -self.max_w, self.max_w)
 
 		if abs(e_theta) > np.pi/8:
 			# we first turn to the goal
@@ -283,6 +286,7 @@ class AutonomousNav():
 			# Make the linear speed gain proportional to the distance to the target position
 			kv = kvmax * (1 - np.exp(-av * ed**2)) / abs(ed)
 			v = kv * ed  # linear speed
+			v = np.clip(v, -self.max_v, self.max_v)
 
 		return v, w
 
@@ -296,11 +300,13 @@ class AutonomousNav():
 		theta_fw = self.normalize_angle(theta_fw)
 
 		w = kAO * theta_fw
+		w = np.clip(w, -self.max_w, self.max_w)
 
 		if abs(theta_fw) > np.pi / 2:
 			v = 0
 		else:
-			v = 0.13
+			v = self.max_v
+
 
 		return v, w
 
