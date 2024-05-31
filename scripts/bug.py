@@ -48,7 +48,7 @@ class BugBase():
 
 		self.v_msg = Twist() # Robot's desired speed
 		self.current_state = 'Stop' # Robot's current state
-		theta_AO = 0.0
+		self.theta_AO = 0.0
 		self.hit_distance = 0
 
 		###******* INIT PUBLISHERS *******###
@@ -104,7 +104,7 @@ class BugBase():
 			pose_AO.pose.position.x = 0
 			pose_AO.pose.position.y = 0
 			pose_AO.pose.position.z = 0
-			quat = quaternion_from_euler(0, 0, theta_AO)
+			quat = quaternion_from_euler(0, 0, self.theta_AO)
 			pose_AO.pose.orientation.x = quat[0]
 			pose_AO.pose.orientation.y = quat[1]
 			pose_AO.pose.orientation.z = quat[2]
@@ -215,7 +215,7 @@ class BugBase():
 
 	def compute_gtg_control(self, x_target, y_target, x_robot, y_robot, theta_robot):
 		# This function returns the linear and angular speed to reach a given goal
-		kvmax = 0.12  # linear speed maximum gain
+		kvmax = 0.5 # linear speed maximum gain
 		kwmax = 0.5  # angular angular speed maximum gain
 		av = 2.0  # Constant to adjust the exponential's growth rate
 		aw = 2.0  # Constant to adjust the exponential's growth rate
@@ -239,35 +239,33 @@ class BugBase():
 		return v, w
 
 	def compute_fw_control(self, closest_angle, clockwise):
-		kAO = 1.5 # Proportional constant for the angular speed controller
+		kAO = 1.5  # Proportional constant for the angular speed controller
 		closest_angle = self.normalize_angle(closest_angle)
-		if self.rotating:
-			theta_fw = self.rotation_target
-			if abs(theta_fw - self.pose_theta) < np.pi/6:
-				self.rotating = False
-				self.rotation_target = 0
-				v = self.max_v
-			else:
-				v = 0
+
+		if clockwise:
+			theta_fw = self.get_theta_AO(closest_angle) - np.pi/2
 		else:
-			if clockwise:
-				theta_fw = self.get_theta_AO(closest_angle) - np.pi/2
-			else:
-				theta_fw = self.get_theta_AO(closest_angle) + np.pi/2
+			theta_fw = self.get_theta_AO(closest_angle) + np.pi/2
 
-			theta_fw = self.normalize_angle(theta_fw)
+		theta_fw = self.normalize_angle(theta_fw)
 
-			if abs(theta_fw) > np.pi/4:
-				self.rotating = True
-				self.rotation_target = theta_fw
-				v = 0
-			else:
-				v = self.max_v
-
+		# Modify angular speed calculation
 		w = kAO * theta_fw
 		w = np.clip(w, -self.max_w, self.max_w)
+
+		# Modify linear speed based on the turning angle
+		max_v = self.max_v  # Assuming self.max_v is defined as the maximum linear velocity
+		angle_threshold = np.pi / 6  # Threshold angle for reducing speed more sharply
+		scaling_factor = 10  # Factor to increase the steepness of the scaling
+
+		if abs(theta_fw) > angle_threshold:
+			v = max_v / (scaling_factor * (abs(theta_fw) + 1))
+		else:
+			v = max_v * (1 - (abs(theta_fw) / angle_threshold) ** 2)
+
 		self.theta_fw = theta_fw
 		return v, w
+
 
 	def get_theta_AO(self, closest_angle):
 		return self.normalize_angle(closest_angle - np.pi)
