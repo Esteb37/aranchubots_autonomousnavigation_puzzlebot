@@ -2,7 +2,7 @@
 import rospy
 from geometry_msgs.msg import Twist, PoseStamped
 from visualization_msgs.msg import Marker
-from std_msgs.msg import Bool
+from std_msgs.msg import Float32
 from sensor_msgs.msg import LaserScan #Lidar
 from nav_msgs.msg import Odometry, Path
 import numpy as np
@@ -42,6 +42,8 @@ class AutonomousNav():
 		closest_angle = 0.0 #Angle to the closest object
 		closest_range = 0.0 #Distance to the closest object
 		self.ao_distance = 0.25 # distance from closest obstacle to activate the avoid obstacle behavior [m]
+		self.rotating = False
+		self.rotation_target = 0
 		stop_distance = 0.1 # distance from closest obstacle to stop the robot [m]
 
 		v_msg = Twist() # Robot's desired speed
@@ -171,7 +173,11 @@ class AutonomousNav():
 			pose_fw.pose.position.x = 0
 			pose_fw.pose.position.y = 0
 			pose_fw.pose.position.z = 0
-			quat = quaternion_from_euler(0, 0, self.theta_fw)
+			if self.rotating:
+				theta_fw = self.rotation_target - self.pose_theta
+			else:
+				theta_fw = self.theta_fw
+			quat = quaternion_from_euler(0, 0, theta_fw)
 			pose_fw.pose.orientation.x = quat[0]
 			pose_fw.pose.orientation.y = quat[1]
 			pose_fw.pose.orientation.z = quat[2]
@@ -272,11 +278,11 @@ class AutonomousNav():
 		angle_min = lidar_msg.angle_min
 
 		# get front quarter
-		cropped_ranges = ranges[len(ranges)//8*3:len(ranges)//8*5]
+		cropped_ranges = ranges[len(ranges)//6*2:len(ranges)//6*4]
 		front_closest = np.min(cropped_ranges)
 
 		if front_closest < self.ao_distance:
-			min_idx = np.argmin(cropped_ranges) + len(ranges)//8*3
+			min_idx = np.argmin(cropped_ranges) + len(ranges)//6*2
 		else:
 			min_idx = np.argmin(ranges)
 
@@ -303,7 +309,7 @@ class AutonomousNav():
 		# Compute the robot's angular speed
 		kw = kwmax * (1 - np.exp(-aw * e_theta**2)) / abs(e_theta)
 		w = kw * e_theta
-		v = np.clip(w, -self.max_w, self.max_w)
+		w = np.clip(w, -self.max_w, self.max_w)
 
 		if abs(e_theta) > np.pi/8:
 			# we first turn to the goal
@@ -319,20 +325,33 @@ class AutonomousNav():
 	def compute_fw_control(self, closest_angle, clockwise):
 		kAO = 1.5 # Proportional constant for the angular speed controller
 		closest_angle = self.normalize_angle(closest_angle)
-		if clockwise:
-			theta_fw = self.get_theta_AO(closest_angle) - np.pi/2
-		else:
-			theta_fw = self.get_theta_AO(closest_angle) + np.pi/2
 
-		theta_fw = self.normalize_angle(theta_fw)
+		if self.rotating:
+			theta_fw = self.rotation_target
+			if abs(theta_fw - self.pose_theta) < np.pi/6:
+				self.rotating = False
+				self.rotation_target = 0
+				v = self.max_v
+			else:
+				v = 0
+		else:
+			if clockwise:
+				theta_fw = self.get_theta_AO(closest_angle) - np.pi/2
+			else:
+				theta_fw = self.get_theta_AO(closest_angle) + np.pi/2
+
+			theta_fw = self.normalize_angle(theta_fw)
+
+			if abs(theta_fw) > np.pi/4:
+				self.rotating = True
+				self.rotation_target = theta_fw
+				v = 0
+			else:
+				v = self.max_v
 
 		w = kAO * theta_fw
 		w = np.clip(w, -self.max_w, self.max_w)
 
-		if abs(theta_fw) > np.pi / 4:
-			v = 0
-		else:
-			v = self.max_v
 		self.theta_fw = theta_fw
 		return v, w
 

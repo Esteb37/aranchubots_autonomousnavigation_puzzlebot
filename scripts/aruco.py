@@ -26,7 +26,7 @@ class Aruco():
 
 		rate = rospy.Rate(50)
 		while not rospy.is_shutdown():
-			if self.marker_id != 0:
+			if self.marker_id != -1:
 				# Transformar la posicion del marco del robot usando la traslacion
 				position_robot = self.transform_to_robot_frame()
 
@@ -54,7 +54,7 @@ class Aruco():
 				position_msg.data = [distance, angle, float(self.marker_id)]
 				self.position.publish(position_msg)
 
-			self.marker_id = 0
+			self.marker_id = -1
 			rate.sleep()
 
 

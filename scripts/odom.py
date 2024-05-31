@@ -8,7 +8,7 @@ import tf2_ros
 from geometry_msgs.msg import TransformStamped
 import numpy as np
 from KF import KalmanFilter
-from aruco_markers import MarkerLocations
+from aruco_markers import MarkerLocations, SimMarkerLocations
 
 np.set_printoptions(suppress=True)
 np.set_printoptions(formatter={'float': '{: 0.4f}'.format})
@@ -36,6 +36,7 @@ class PuzzlebotLocClass():
 		rospy.Subscriber(prefix+"/wr", Float32, self.wr_cb)
 		rospy.Subscriber("/aruco", Float32MultiArray, self.aruco_cb)
 
+		self.MarkerLocations = MarkerLocations if not is_sim else SimMarkerLocations
 
 		# Publishers
 		self.odom_pub = rospy.Publisher('/odom', Odometry, queue_size=1)
@@ -62,7 +63,7 @@ class PuzzlebotLocClass():
 
 		self.wl = 0.0
 		self.wr = 0.0
-		self.aruco_id = 0
+		self.aruco_id = -1
 		self.z_i = np.zeros(2)
 		self.m_i = np.zeros(2)
 
@@ -95,12 +96,13 @@ class PuzzlebotLocClass():
 
 			KF.predict([V, W], Qk)
 
-			if self.aruco_id > 0:
+			if self.aruco_id > -1:
+				print("Correcting")
 				mu, sigma = KF.correct(mi, zi, Rk)
 			else:
 				mu, sigma = KF.step()
 
-			self.aruco_id = 0
+			self.aruco_id = -1
 
 			self.publish_odom(mu, sigma, [V, W])
 
@@ -119,7 +121,7 @@ class PuzzlebotLocClass():
 	def aruco_cb(self, msg):
 		self.aruco_id = int(msg.data[2])
 		self.z_i = msg.data[0:2]
-		self.m_i = MarkerLocations[self.aruco_id]
+		self.m_i = self.MarkerLocations[self.aruco_id]
 
 	def publish_odom(self, pose, sigma, speed):
 		#This functions receives the robot speed v [m/s] and w [rad/s]
@@ -204,7 +206,7 @@ class PuzzlebotLocClass():
 
 	def publish_aruco_markers(self):
 		marker_array = MarkerArray()
-		for idx, marker in MarkerLocations.items():
+		for idx, marker in self.MarkerLocations.items():
 			m = Marker()
 			m.header.frame_id = "map"
 			m.header.stamp = rospy.Time.now()

@@ -8,6 +8,12 @@
   <arg name="world_name" default="$(find aranchubots_autonomousnavigation_puzzlebot)/worlds/first_world.world"/>
   <arg name="robot_configuration" default="complete" />
 
+          <arg name="robot_name" default="puzzlebot_1"/>
+        <arg name="robot_description_file" default="puzzlebot_jetson_lidar_ed_v1.xacro"/>
+        <arg name="pos_x" default="0.31"/>
+		<arg name="pos_y" default="-0.27"/>
+		<arg name="pos_theta" default="0.0"/>
+
   <!-- Launch Gazebo with the specified world -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="debug" value="0" />
@@ -16,5 +22,15 @@
     <arg name="headless" value="$(arg headless)" />
     <arg name="world_name" value="$(arg world_name)" />
   </include>
+
+  <!-- Launch Puzzlebot -->
+        <include file="$(find puzzlebot_gazebo)/launch/puzzlebot_spawner.launch">
+            <arg name="robot" value="$(arg robot_name)"/>
+            <arg name="robot_description_file" value="$(arg robot_description_file)"/>
+            <arg name="x" value="$(arg pos_x)"/>
+            <arg name="y" value="$(arg pos_y)"/>
+            <arg name="yaw" value="$(arg pos_theta)"/>
+        </include>
+
 
 </launch>

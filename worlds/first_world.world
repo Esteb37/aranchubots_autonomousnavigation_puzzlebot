@@ -138,66 +138,6 @@
       <real_time>429 973320654</real_time>
       <wall_time>1716940318 56782550</wall_time>
       <iterations>398397</iterations>
-      <model name='aruco_marker_1'>
-        <pose>1.7374 -0.8 0.1 0 -0 0</pose>
-        <scale>1 1 1</scale>
-        <link name='link'>
-          <pose>1.7374 -0.8 0.1 0 -0 0</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 0 0 -0 0</acceleration>
-          <wrench>0 0 0 0 -0 0</wrench>
-        </link>
-      </model>
-      <model name='aruco_marker_2'>
-        <pose>2.9 -2 0.1 0 -0 1.6</pose>
-        <scale>1 1 1</scale>
-        <link name='link'>
-          <pose>2.9 -2 0.1 0 -0 1.6</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 0 0 -0 0</acceleration>
-          <wrench>0 0 0 0 -0 0</wrench>
-        </link>
-      </model>
-      <model name='aruco_marker_3'>
-        <pose>2.9 -0.02 0.1 0 0 -1.59</pose>
-        <scale>1 1 1</scale>
-        <link name='link'>
-          <pose>2.9 -0.02 0.1 0 0 -1.59</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 0 0 -0 0</acceleration>
-          <wrench>0 0 0 0 -0 0</wrench>
-        </link>
-      </model>
-      <model name='aruco_marker_4'>
-        <pose>2.571 -1.7 0.1 0 -0 3.08318</pose>
-        <scale>1 1 1</scale>
-        <link name='link'>
-          <pose>2.571 -1.7 0.1 0 -0 3.08318</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 0 0 -0 0</acceleration>
-          <wrench>0 0 0 0 -0 0</wrench>
-        </link>
-      </model>
-      <model name='aruco_marker_5'>
-        <pose>0.01 -0.3 0.1 0 -0 0</pose>
-        <scale>1 1 1</scale>
-        <link name='link'>
-          <pose>0.01 -0.3 0.1 0 -0 0</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 0 0 -0 0</acceleration>
-          <wrench>0 0 0 0 -0 0</wrench>
-        </link>
-      </model>
-      <model name='aruco_marker_6'>
-        <pose>0.01 -1 0.1 0 -0 0</pose>
-        <scale>1 1 1</scale>
-        <link name='link'>
-          <pose>0.01 -1 0.1 0 -0 0</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 0 0 -0 0</acceleration>
-          <wrench>0 0 0 0 -0 0</wrench>
-        </link>
-      </model>
       <model name='ground_plane'>
         <pose>0 0 0 0 -0 0</pose>
         <scale>1 1 1</scale>
@@ -230,7 +170,7 @@
       </camera>
     </gui>
     <model name='aruco_marker_1'>
-      <pose>1.7374 -0.7858 0 0 -0 0</pose>
+      <pose>0.01 -0.4 0.1 0 -0 0</pose>
       <static>1</static>
       <link name='link'>
         <inertial>
@@ -317,7 +257,7 @@
       </link>
     </model>
     <model name='aruco_marker_2'>
-      <pose>2.89729 -0.398048 0 0 -0 0</pose>
+      <pose>0 -1.2 0.1 0 -0 0</pose>
       <static>1</static>
       <link name='link'>
         <inertial>
@@ -404,7 +344,7 @@
       </link>
     </model>
     <model name='aruco_marker_3'>
-      <pose>1.37369 -2.47199 0 0 -0 0</pose>
+      <pose>2.58 -1.61 0.1 0 -0 3.14 </pose>
       <static>1</static>
       <link name='link'>
         <inertial>
@@ -491,11 +431,11 @@
       </link>
     </model>
     <model name='aruco_marker_4'>
-      <pose>2.07777 -2.17668 0 0 -0 0</pose>
+      <pose>2.85 -1.99 0.1 0 -0 1.57</pose>
       <static>1</static>
       <link name='link'>
         <inertial>
-          <pose>0 0 0 0 -0 0</pose>
+          <pose>0 0 0 0 0 0</pose>
           <mass>0.281</mass>
           <inertia>
             <ixx>0.0006167</ixx>
@@ -578,7 +518,7 @@
       </link>
     </model>
     <model name='aruco_marker_5'>
-      <pose>1.77396 -1.93072 0 0 -0 0</pose>
+      <pose>2.865 -0.01 0.1 0 -0 -1.57</pose>
       <static>1</static>
       <link name='link'>
         <inertial>
@@ -665,11 +605,11 @@
       </link>
     </model>
     <model name='aruco_marker_6'>
-      <pose>0.743002 -1.51575 0 0 -0 0</pose>
+      <pose>1.735 -0.78 0.1 0 -0 0</pose>
       <static>1</static>
       <link name='link'>
         <inertial>
-          <pose>0 0 0 0 -0 0</pose>
+          <pose>0.01 -1.2 0 0 -0 0</pose>
           <mass>0.281</mass>
           <inertia>
             <ixx>0.0006167</ixx>
