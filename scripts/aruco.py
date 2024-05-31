@@ -27,30 +27,8 @@ class Aruco():
 		rate = rospy.Rate(50)
 		while not rospy.is_shutdown():
 			if self.marker_id != -1:
-				# Transformar la posicion del marco del robot usando la traslacion
 				position_robot = self.transform_to_robot_frame()
-
-				# Calcular la distancia y el angulo
 				distance, angle = self.calculate_distance_and_angle(position_robot)
-
-				# Imprimir la informacion de manera estructurada
-				"""print("fiducial_id: %d", self.marker_id)
-				print("transform:")
-				print("  translation:")
-				print("	x: %f", self.translation.x)
-				print("	y: %f", self.translation.y)
-				print("	z: %f", self.translation.z)
-				print("  rotation:")
-				print("	x: %f", self.rotation.x)
-				print("	y: %f", self.rotation.y)
-				print("	z: %f", self.rotation.z)
-				print("	w: %f", self.rotation.w)
-				print("image_error: %f", self.image_error)
-				print("object_error: %f", self.object_error)
-				print("fiducial_area: %f", self.fiducial_area)
-				print("Position in Robot Frame: x: %f, y: %f, z: %f", position_robot[0], position_robot[1], position_robot[2])
-				print("Distance: %f, Angle: %f", distance, angle)"""
-
 				position_msg.data = [distance, angle, float(self.marker_id)]
 				self.position.publish(position_msg)
 
@@ -59,18 +37,13 @@ class Aruco():
 
 
 	def transform_to_robot_frame(self):
-		# Matriz de transformacion adicional para ajustar el marco de la camara al marco del robot
 		T_cam_to_robot = np.array([[0, 0, 1, 0.07],
 								   [1, 0, 0, 0.0],
 								   [0, 1, 0, 0.09],
 								   [0, 0, 0, 1]])
-
-		# Covertir la posicion a un vector homogeneo
 		position_homogeneous = np.array([self.translation.x, self.translation.y, self.translation.z, 1.0])
-
-		# Transformar la posicion
 		T_final = np.dot(T_cam_to_robot, position_homogeneous)
-		return T_final[:3] # Devolver solo x, y, z
+		return T_final[:3]
 
 
 	def calculate_distance_and_angle(self, position_robot):

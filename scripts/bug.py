@@ -239,7 +239,7 @@ class BugBase():
 
 	def compute_gtg_control(self, x_target, y_target, x_robot, y_robot, theta_robot):
 		# This function returns the linear and angular speed to reach a given goal
-		kvmax = 0.5 # linear speed maximum gain
+		kvmax = 1.0 # linear speed maximum gain
 		kwmax = 0.5  # angular angular speed maximum gain
 		av = 2.0  # Constant to adjust the exponential's growth rate
 		aw = 2.0  # Constant to adjust the exponential's growth rate

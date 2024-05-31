@@ -95,7 +95,7 @@ class AutonomousNav(BugBase):
 				self.current_state = "Stop"
 			else:
 				# If the closest object suddenly jumps to the other side of the corridor, recalculate direction
-				if abs(self.prev_angle - self.closest_angle) > np.pi / 4 * 3:
+				if abs(self.prev_angle - self.closest_angle) > np.pi / 2:
 					theta_fwc = self.normalize_angle(self.theta_AO - np.pi/2)
 					self.clockwise = abs(theta_fwc - self.theta_gtg)<=np.pi/2
 					print("Jump")
@@ -137,3 +137,7 @@ class AutonomousNav(BugBase):
 		self.calculate_ray()
 		self.current_state = "GoToGoal"
 		self.hit_distance = np.inf
+
+if __name__ == "__main__":
+	rospy.init_node("go_to_goal_with_obstacles1", anonymous=True)
+	AutonomousNav()

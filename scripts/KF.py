@@ -48,6 +48,7 @@ class KalmanFilter():
 		p = dx*dx + dy*dy
 		z_i_rho = np.sqrt(p)
 		z_i_alpha = np.arctan2(dy, dx) - s_theta
+		z_i_alpha = np.arctan2(np.sin(z_i_alpha), np.cos(z_i_alpha))
 		return np.array([z_i_rho, z_i_alpha])
 
 	def G(self, s, m_i):

@@ -96,7 +96,6 @@ class PuzzlebotLocClass():
 			KF.predict([V, W], Qk)
 
 			if self.aruco_id > -1:
-				print("Correcting", zi, KF.g(KF.mu_pred, mi))
 				mu, sigma = KF.correct(mi, zi, Rk)
 			else:
 				mu, sigma = KF.step()
