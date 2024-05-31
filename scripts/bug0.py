@@ -36,8 +36,8 @@ class Bug0():
 		self.odom_received = False
 		self.theta_fw = 0
 
-		self.max_v = 0.2
-		self.max_w = 0.5
+		self.max_v = 0.3
+		self.max_w = 1.0
 
 		self.closest_angle = 0.0 #Angle to the closest object
 		self.closest_range = 0.0 #Distance to the closest object
@@ -263,7 +263,8 @@ class Bug0():
 			else:
 				current_closest_object = self.get_closest_object_pos()
 				distance = self.get_distance(self.last_closest_object, current_closest_object)
-				if distance > 0.37:
+				if distance > 0.4:
+					print(distance)
 					theta_fwc = self.normalize_angle(self.theta_AO - np.pi/2)
 					self.clockwise = abs(theta_fwc - self.theta_gtg)<=np.pi/2
 					print("Jump")
