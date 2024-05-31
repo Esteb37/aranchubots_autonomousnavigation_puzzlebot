@@ -43,8 +43,6 @@ class Bug0():
 		self.closest_range = 0.0 #Distance to the closest object
 		self.ao_distance = 0.25 # distance from closest obstacle to activate the avoid obstacle behavior [m]
 		self.stop_distance = 0.1 # distance from closest obstacle to stop the robot [m]
-		self.rotating = False
-		self.rotation_target = 0
 
 		self.v_msg = Twist() # Robot's desired speed
 		self.current_state = 'Stop' # Robot's current state
@@ -117,11 +115,7 @@ class Bug0():
 			pose_fw.pose.position.x = 0
 			pose_fw.pose.position.y = 0
 			pose_fw.pose.position.z = 0
-			if self.rotating:
-				theta_fw = self.rotation_target - self.pose_theta
-			else:
-				theta_fw = self.theta_fw
-			quat = quaternion_from_euler(0, 0, theta_fw)
+			quat = quaternion_from_euler(0, 0, self.theta_fw)
 			pose_fw.pose.orientation.x = quat[0]
 			pose_fw.pose.orientation.y = quat[1]
 			pose_fw.pose.orientation.z = quat[2]
@@ -233,11 +227,7 @@ class Bug0():
 				self.goal_received = 0
 
 			elif self.closest_range < self.ao_distance:
-
-				# get pos of current closest object with respect to odom
-				current_closest_object = [self.pose_x + self.closest_range * np.cos(self.closest_angle), self.pose_y + self.closest_range * np.sin(self.closest_angle)]
-
-				# distance between the last and current closest object
+				current_closest_object = self.get_closest_object_pos()
 				distance = self.get_distance(self.last_closest_object, current_closest_object)
 
 				if distance > self.eps:
@@ -256,8 +246,7 @@ class Bug0():
 
 		elif self.current_state == 'AvoidObstacle':
 			if self.ao_condition():
-				# get pos of last object with respect to odom
-				self.last_closest_object = [self.pose_x + self.closest_range * np.cos(self.closest_angle), self.pose_y + self.closest_range * np.sin(self.closest_angle)]
+				self.last_closest_object = self.get_closest_object_pos()
 				self.current_state = "GoToGoal"
 				print("Going to goal")
 
@@ -272,12 +261,14 @@ class Bug0():
 				self.goal_received = 0
 
 			else:
-				# If the closest object suddenly jumps to the other side of the corridor, recalculate direction
-				if abs(self.prev_angle - self.closest_angle) > np.pi / 3 * 2:
+				current_closest_object = self.get_closest_object_pos()
+				distance = self.get_distance(self.last_closest_object, current_closest_object)
+				if distance > 0.37:
 					theta_fwc = self.normalize_angle(self.theta_AO - np.pi/2)
 					self.clockwise = abs(theta_fwc - self.theta_gtg)<=np.pi/2
 					print("Jump")
 
+				self.last_closest_object = self.get_closest_object_pos()
 				v_ao, w_ao = self.compute_fw_control(self.closest_angle, self.clockwise)
 				self.v_msg.linear.x = v_ao
 				self.v_msg.angular.z = w_ao
@@ -315,8 +306,8 @@ class Bug0():
 
 	def compute_gtg_control(self, x_target, y_target, x_robot, y_robot, theta_robot):
 		# This function returns the linear and angular speed to reach a given goal
-		kvmax = 1.0 # linear speed maximum gain
-		kwmax = 0.5  # angular angular speed maximum gain
+		kvmax = 0.7 # linear speed maximum gain
+		kwmax = 1.0  # angular angular speed maximum gain
 		av = 2.0  # Constant to adjust the exponential's growth rate
 		aw = 2.0  # Constant to adjust the exponential's growth rate
 		ed = np.sqrt((x_target - x_robot)**2 + (y_target - y_robot)**2)
@@ -418,6 +409,9 @@ class Bug0():
 
 	def additional_publish(self):
 		pass
+
+	def get_closest_object_pos(self):
+		return [self.pose_x + self.closest_range * np.cos(self.closest_angle), self.pose_y + self.closest_range * np.sin(self.closest_angle)]
 
 if __name__ == "__main__":
 	rospy.init_node("bug0", anonymous=True)
