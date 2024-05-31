@@ -163,10 +163,21 @@ class Bug0():
 			marker_mode.pose.orientation.z = 0.0
 			marker_mode.pose.orientation.w = 1.0
 
-			marker_mode.color.a = 1.0
-			marker_mode.color.r = 1.0 if self.current_state == 'GoToGoal' else 0.0
-			marker_mode.color.g = 1.0 if self.current_state == 'GoToGoal' else 0.0
-			marker_mode.color.b = 0.0 if self.current_state == 'GoToGoal' else 1.0
+			if self.current_state == 'Stop':
+				marker_mode.color.a = 1.0
+				marker_mode.color.r = 0.0
+				marker_mode.color.g = 1.0
+				marker_mode.color.b = 0.0
+			elif self.current_state == 'GoToGoal':
+				marker_mode.color.a = 1.0
+				marker_mode.color.r = 1.0
+				marker_mode.color.g = 1.0
+				marker_mode.color.b = 0.0
+			elif self.current_state == 'AvoidObstacle':
+				marker_mode.color.a = 1.0
+				marker_mode.color.r = 0.0
+				marker_mode.color.g = 0.0
+				marker_mode.color.b = 1.0
 
 			goal_marker = Marker()
 			goal_marker.header.frame_id = "odom"
@@ -263,8 +274,7 @@ class Bug0():
 			else:
 				current_closest_object = self.get_closest_object_pos()
 				distance = self.get_distance(self.last_closest_object, current_closest_object)
-				if distance > 0.4:
-					print(distance)
+				if distance > 0.35 and abs(self.closest_angle - self.prev_angle) > np.pi / 3 * 2:
 					theta_fwc = self.normalize_angle(self.theta_AO - np.pi/2)
 					self.clockwise = abs(theta_fwc - self.theta_gtg)<=np.pi/2
 					print("Jump")
