@@ -285,14 +285,17 @@ class Bug0():
 		ranges = np.array(lidar_msg.ranges)
 		angle_min = lidar_msg.angle_min
 
-			# get front quarter
+		# get front quarter
 		cropped_ranges = ranges[len(ranges)//6*2:len(ranges)//6*4]
 		front_closest = np.min(cropped_ranges)
 
 		if front_closest < self.ao_distance:
 			min_idx = np.argmin(cropped_ranges) + len(ranges)//6*2
 		else:
-			min_idx = np.argmin(ranges)
+			# get front half
+			cropped_ranges = ranges[len(ranges)//4:len(ranges)//4*3]
+			front_closest = np.min(cropped_ranges)
+			min_idx = np.argmin(cropped_ranges) + len(ranges)//4
 
 		closest_range = ranges[min_idx]
 		closest_angle = angle_min + min_idx * lidar_msg.angle_increment
