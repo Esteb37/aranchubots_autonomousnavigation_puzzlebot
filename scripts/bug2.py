@@ -1,13 +1,17 @@
 #!/usr/bin/env python
-from bug import BugBase
+from bug0 import Bug0
 import rospy
 from geometry_msgs.msg import PoseStamped
 from nav_msgs.msg import Path
 import numpy as np
 
 # This class will make the puzzlebot move to a given goal
-class AutonomousNav(BugBase):
+class Bug2(Bug0):
 
+	ray_distance = 0.03
+
+	def ao_condition(self):
+		return self.distance_to_line([self.pose_x, self.pose_y], self.ray_trace) < self.ray_distance and self.progress() < abs(self.hit_distance - self.eps)
 
 	def additional_init(self):
 		self.pub_ray_trace = rospy.Publisher('ray_trace', Path, queue_size=1)
@@ -46,65 +50,7 @@ class AutonomousNav(BugBase):
 
 		self.pub_ray_trace.publish(path)
 
-	def run_state_machine(self):
-		self.closest_range, self.closest_angle = self.get_closest_object(self.lidar_msg)
-		self.theta_AO = self.get_theta_AO(self.closest_angle)
-		if self.current_state == 'Stop':
-			if self.goal_received:
-				print("Going to goal")
-				self.current_state = "GoToGoal"
-			self.v_msg.linear.x = 0
-			self.v_msg.angular.z = 0
 
-		elif self.current_state == 'GoToGoal':
-			if self.at_goal():
-				print("At goal")
-				self.current_state = "Stop"
-				self.goal_received = 0
-
-			elif self.closest_range < self.stop_distance:
-				print("Too close")
-				self.current_state = "Stop"
-
-			elif self.closest_range < self.ao_distance:
-				theta_fwc = self.normalize_angle(self.theta_AO - np.pi/2)
-				self.clockwise = abs(theta_fwc - self.theta_gtg)<=np.pi/2
-				self.current_state = "AvoidObstacle"
-				self.hit_distance = self.progress()
-				if self.clockwise:
-					print("AvoidObstacleClockwise")
-				else:
-					print("AvoidObstacleCounter")
-			else:
-				v_gtg, w_gtg = self.compute_gtg_control(self.x_target, self.y_target, self.pose_x, self.pose_y, self.pose_theta)
-				self.v_msg.linear.x = v_gtg
-				self.v_msg.angular.z = w_gtg
-
-		elif self.current_state == 'AvoidObstacle':
-			if self.distance_to_line([self.pose_x, self.pose_y], self.ray_trace) < 0.05 and self.progress() < abs(self.hit_distance - self.eps):
-				self.current_state = "GoToGoal"
-				print("Going to goal")
-
-			if self.at_goal():
-				print("At goal")
-				self.current_state = "Stop"
-				self.goal_received = 0
-
-			elif self.closest_range < self.stop_distance:
-				print("Too close")
-				self.current_state = "Stop"
-			else:
-				# If the closest object suddenly jumps to the other side of the corridor, recalculate direction
-				if abs(self.prev_angle - self.closest_angle) > np.pi / 2:
-					theta_fwc = self.normalize_angle(self.theta_AO - np.pi/2)
-					self.clockwise = abs(theta_fwc - self.theta_gtg)<=np.pi/2
-					print("Jump")
-
-				v_ao, w_ao = self.compute_fw_control(self.closest_angle, self.clockwise)
-				self.v_msg.linear.x = v_ao
-				self.v_msg.angular.z = w_ao
-
-		self.prev_angle = self.closest_angle
 
 	def get_ray_trace(self, a, b):
 		x1 = a[0]
@@ -139,5 +85,5 @@ class AutonomousNav(BugBase):
 		self.hit_distance = np.inf
 
 if __name__ == "__main__":
-	rospy.init_node("go_to_goal_with_obstacles1", anonymous=True)
-	AutonomousNav()
+	rospy.init_node("bug2", anonymous=True)
+	Bug2()
