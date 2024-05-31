@@ -129,3 +129,11 @@ class AutonomousNav(BugBase):
 		self.start_x = self.pose_x
 		self.start_y = self.pose_y
 		self.ray_trace = self.get_ray_trace([self.start_x, self.start_y], [self.x_target, self.y_target])
+
+	def goal_cb(self, msg):
+		self.x_target = msg.pose.position.x
+		self.y_target = msg.pose.position.y
+		self.goal_received = 1
+		self.calculate_ray()
+		self.current_state = "GoToGoal"
+		self.hit_distance = np.inf

@@ -36,7 +36,7 @@ class BugBase():
 		self.odom_received = False
 		self.theta_fw = 0
 
-		self.max_v = 0.12
+		self.max_v = 0.2
 		self.max_w = 0.5
 
 		self.closest_angle = 0.0 #Angle to the closest object
@@ -49,7 +49,7 @@ class BugBase():
 		self.v_msg = Twist() # Robot's desired speed
 		self.current_state = 'Stop' # Robot's current state
 		self.theta_AO = 0.0
-		self.hit_distance = 0
+		self.hit_distance = np.inf
 
 		###******* INIT PUBLISHERS *******###
 		vel_topic = "/cmd_vel" if not is_sim else "puzzlebot_1/base_controller/cmd_vel"
@@ -61,6 +61,7 @@ class BugBase():
 		pub_closest_object = rospy.Publisher('closest_object', Marker, queue_size=1)
 		pub_mode = rospy.Publisher('mode', Marker, queue_size=1)
 		pub_theta_fw = rospy.Publisher('theta_fw', PoseStamped, queue_size=1)
+		pub_goal = rospy.Publisher('goal_marker', Marker, queue_size=1)
 
 		rospy.Subscriber(scan_topic, LaserScan, self.laser_cb)
 		rospy.Subscriber("/move_base_simple/goal", PoseStamped, self.goal_cb)
@@ -173,6 +174,29 @@ class BugBase():
 			marker_mode.color.g = 1.0 if self.current_state == 'GoToGoal' else 0.0
 			marker_mode.color.b = 0.0 if self.current_state == 'GoToGoal' else 1.0
 
+			goal_marker = Marker()
+			goal_marker.header.frame_id = "odom"
+			goal_marker.header.stamp = rospy.Time.now()
+			goal_marker.ns = "goal"
+			goal_marker.id = 0
+			goal_marker.type = Marker.CUBE
+			goal_marker.action = Marker.ADD
+			goal_marker.pose.position.x = self.x_target
+			goal_marker.pose.position.y = self.y_target
+			goal_marker.pose.position.z = 0.0
+			goal_marker.pose.orientation.x = 0.0
+			goal_marker.pose.orientation.y = 0.0
+			goal_marker.pose.orientation.z = 0.0
+			goal_marker.pose.orientation.w = 1.0
+			goal_marker.scale.x = self.target_position_tolerance
+			goal_marker.scale.y = self.target_position_tolerance
+			goal_marker.scale.z = 0.01
+			goal_marker.color.a = 1.0
+			goal_marker.color.r = 0.0
+			goal_marker.color.g = 1.0
+			goal_marker.color.b = 0.0
+
+			pub_goal.publish(goal_marker)
 			pub_mode.publish(marker_mode)
 			pub_closest_object.publish(marker_closest)
 			pub_theta_gtg.publish(pose_gtg)
@@ -287,6 +311,7 @@ class BugBase():
 		self.x_target = msg.pose.position.x
 		self.y_target = msg.pose.position.y
 		self.goal_received = 1
+		self.hit_distance = np.inf
 
 
 	def cleanup(self):

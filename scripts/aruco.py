@@ -76,6 +76,7 @@ class Aruco():
 	def calculate_distance_and_angle(self, position_robot):
 		distance = math.sqrt(position_robot[0]**2 + position_robot[1]**2 + position_robot[2]**2)
 		angle = - math.atan2(position_robot[1], position_robot[0])
+		angle = self.normalize_angle(angle)
 		return distance, angle
 
 
@@ -90,6 +91,8 @@ class Aruco():
 			self.object_error = transform.object_error
 			self.fiducial_area = transform.fiducial_area
 
+	def normalize_angle(self, angle):
+		return np.arctan2(np.sin(angle), np.cos(angle))
 
 if __name__ == '__main__':
 	Aruco()

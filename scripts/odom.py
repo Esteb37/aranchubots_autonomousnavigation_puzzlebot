@@ -40,7 +40,6 @@ class PuzzlebotLocClass():
 
 		# Publishers
 		self.odom_pub = rospy.Publisher('/odom', Odometry, queue_size=1)
-		self.goal_pub = rospy.Publisher('/goal_marker', Marker, queue_size=1)
 		self.aruco_pub = rospy.Publisher('/aruco_markers', MarkerArray, queue_size=1)
 		self.tf_broadcaster = tf2_ros.TransformBroadcaster()
 
@@ -97,7 +96,7 @@ class PuzzlebotLocClass():
 			KF.predict([V, W], Qk)
 
 			if self.aruco_id > -1:
-				print("Correcting")
+				print("Correcting", zi, KF.g(KF.mu_pred, mi))
 				mu, sigma = KF.correct(mi, zi, Rk)
 			else:
 				mu, sigma = KF.step()
