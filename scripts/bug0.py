@@ -2,8 +2,8 @@
 import rospy
 from geometry_msgs.msg import Twist, PoseStamped
 from visualization_msgs.msg import Marker
-from sensor_msgs.msg import LaserScan #Lidar
-from nav_msgs.msg import Odometry
+from sensor_msgs.msg import LaserScan
+from nav_msgs.msg import Odometry, Path
 import numpy as np
 from tf.transformations import euler_from_quaternion, quaternion_from_euler
 
@@ -52,6 +52,8 @@ class Bug0():
 		self.theta_AO = 0.0
 		self.hit_distance = np.inf
 
+		self.lidar_msg = None
+
 		###******* INIT PUBLISHERS *******###
 		vel_topic = "/cmd_vel" if not self.is_sim else "puzzlebot_1/base_controller/cmd_vel"
 		scan_topic = "/scan" if not self.is_sim else "/puzzlebot_1/scan"
@@ -63,6 +65,7 @@ class Bug0():
 		pub_mode = rospy.Publisher('mode', Marker, queue_size=1)
 		pub_theta_fw = rospy.Publisher('theta_fw', PoseStamped, queue_size=1)
 		pub_goal = rospy.Publisher('goal_marker', Marker, queue_size=1)
+		pub_ray = rospy.Publisher('ray', Path, queue_size=1)
 
 		rospy.Subscriber(scan_topic, LaserScan, self.laser_cb)
 		rospy.Subscriber("/move_base_simple/goal", PoseStamped, self.goal_cb)
@@ -72,9 +75,11 @@ class Bug0():
 
 		#********** INIT NODE **********###
 		rate = rospy.Rate(50) #freq Hz
-		rate.sleep()
-
 		self.prev_angle = 0
+
+		self.hit_right = [0, 0]
+		self.hit_left = [0, 0]
+		self.hit_center = [0, 0]
 
 		while not rospy.is_shutdown() and not self.odom_received:
 			rate.sleep()
@@ -204,6 +209,30 @@ class Bug0():
 			goal_marker.color.g = 1.0
 			goal_marker.color.b = 0.0
 
+			left = self.get_side([self.pose_x, self.pose_y], self.theta_gtg, False)
+			right = self.get_side([self.pose_x, self.pose_y], self.theta_gtg, True)
+			goal = [self.x_target, self.y_target]
+			pose = [self.pose_x, self.pose_y]
+			points = [self.hit_left, left, pose, self.hit_center, pose, right, self.hit_right]
+
+			path = Path()
+			path.header.frame_id = "odom"
+			path.header.stamp = rospy.Time.now()
+			path.poses = []
+
+			for i, point in enumerate(points):
+				path.poses.append(PoseStamped())
+				path.poses[i].header.frame_id = "odom"
+				path.poses[i].header.stamp = rospy.Time.now()
+				path.poses[i].pose.position.x = point[0]
+				path.poses[i].pose.position.y = point[1]
+				path.poses[i].pose.position.z = 0
+				path.poses[i].pose.orientation.x = 0
+				path.poses[i].pose.orientation.y = 0
+				path.poses[i].pose.orientation.z = 0
+				path.poses[i].pose.orientation.w = 1
+
+			pub_ray.publish(path)
 			pub_goal.publish(goal_marker)
 			pub_mode.publish(marker_mode)
 			pub_closest_object.publish(marker_closest)
@@ -217,11 +246,13 @@ class Bug0():
 			rate.sleep()
 
 	def ao_condition(self):
-		return abs(self.theta_AO - self.theta_gtg) < np.pi/2 and self.progress() < abs(self.hit_distance - self.eps)
+		return self.ray_clear or (abs(self.theta_AO - self.theta_gtg) < np.pi/2 and self.progress() < abs(self.hit_distance - self.eps))
 
 	def run_state_machine(self):
 		self.closest_range, self.closest_angle = self.get_closest_object(self.lidar_msg)
 		self.theta_AO = self.get_theta_AO(self.closest_angle)
+		self.ray_clear, self.hit_left, self.hit_right, self.hit_center = self.get_hit_points([self.pose_x, self.pose_y], [self.x_target, self.y_target], self.lidar_msg)
+
 		if self.current_state == 'Stop':
 			if self.goal_received:
 				print("Going to goal")
@@ -432,6 +463,56 @@ class Bug0():
 
 	def get_closest_object_pos(self):
 		return [self.pose_x + self.closest_range * np.cos(self.closest_angle), self.pose_y + self.closest_range * np.sin(self.closest_angle)]
+
+	def project_ray(self, position, goal, lidar):
+
+		if not lidar:
+			return True, goal
+
+		ranges = lidar.ranges
+		angle_min = lidar.angle_min
+		angle_increment = lidar.angle_increment
+
+		original_position = [self.pose_x, self.pose_y]
+
+		goal_dist = np.sqrt((goal[0] - position[0])**2 + (goal[1] - position[1])**2)
+		goal_theta = np.arctan2(goal[1] - position[1], goal[0] - position[0])
+
+		for i in range(len(ranges)):
+			angle = angle_min + i * angle_increment + self.ANGLE_OFFSET
+			x = original_position[0] + ranges[i] * np.cos(angle + self.pose_theta)
+			y = original_position[1] + ranges[i] * np.sin(angle + self.pose_theta)
+
+			point_dist = np.sqrt((x - position[0])**2 + (y - position[1])**2)
+			point_theta = np.arctan2(y - position[1], x - position[0])
+
+			if point_dist < goal_dist and abs(point_theta - goal_theta) <= angle_increment:
+				return False, [x, y]
+
+		return True, goal
+
+
+	def get_hit_points(self, position, goal, lidar):
+
+		theta = np.arctan2(goal[1] - position[1], goal[0] - position[0]) - self.pose_theta
+
+		point_left, point_right = self.choose_order(position, theta)
+		goal_left, goal_right = self.choose_order(goal, theta + np.pi)
+
+		clear_left, hit_left = self.project_ray(point_left, goal_left, lidar)
+		clear_right, hit_right = self.project_ray(point_right, goal_right, lidar)
+		clear_center, hit_center = self.project_ray(position, goal, lidar)
+
+		return clear_left and clear_right and clear_center, hit_left, hit_right, hit_center
+
+
+	def get_side(self, position, theta, right):
+		if right:
+			angle = np.pi/2
+		else:
+			angle = -np.pi/2
+
+		return [position[0] + self.ao_distance * np.cos(theta + angle), position[1] + self.ao_distance * np.sin(theta + angle)]
 
 if __name__ == "__main__":
 	rospy.init_node("bug0", anonymous=True)
