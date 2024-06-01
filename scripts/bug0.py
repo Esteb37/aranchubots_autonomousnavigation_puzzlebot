@@ -80,6 +80,8 @@ class Bug0():
 		self.hit_right = [0, 0]
 		self.hit_left = [0, 0]
 		self.hit_center = [0, 0]
+		self.pose_left = [0, 0]
+		self.pose_right = [0, 0]
 
 		while not rospy.is_shutdown() and not self.odom_received:
 			rate.sleep()
@@ -209,11 +211,9 @@ class Bug0():
 			goal_marker.color.g = 1.0
 			goal_marker.color.b = 0.0
 
-			left = self.get_side([self.pose_x, self.pose_y], self.theta_gtg, False)
-			right = self.get_side([self.pose_x, self.pose_y], self.theta_gtg, True)
-			goal = [self.x_target, self.y_target]
+
 			pose = [self.pose_x, self.pose_y]
-			points = [self.hit_left, left, pose, self.hit_center, pose, right, self.hit_right]
+			points = [self.hit_left, self.pose_left, pose, self.hit_center, pose, self.pose_right, self.hit_right]
 
 			path = Path()
 			path.header.frame_id = "odom"
@@ -486,7 +486,7 @@ class Bug0():
 			point_dist = np.sqrt((x - position[0])**2 + (y - position[1])**2)
 			point_theta = np.arctan2(y - position[1], x - position[0])
 
-			if point_dist < goal_dist and abs(point_theta - goal_theta) <= angle_increment:
+			if point_dist < goal_dist and abs(point_theta - goal_theta) <= angle_increment * 2:
 				return False, [x, y]
 
 		return True, goal
@@ -494,13 +494,15 @@ class Bug0():
 
 	def get_hit_points(self, position, goal, lidar):
 
-		theta = np.arctan2(goal[1] - position[1], goal[0] - position[0]) - self.pose_theta
+		pose_goal_theta = self.normalize_angle(np.arctan2(goal[1] - position[1], goal[0] - position[0]))
+		goal_pose_theta = self.normalize_angle(np.arctan2(position[1] - goal[1], position[0] - goal[0]))
 
-		point_left, point_right = self.choose_order(position, theta)
-		goal_left, goal_right = self.choose_order(goal, theta + np.pi)
 
-		clear_left, hit_left = self.project_ray(point_left, goal_left, lidar)
-		clear_right, hit_right = self.project_ray(point_right, goal_right, lidar)
+		self.pose_left, self.pose_right = self.choose_order(position, pose_goal_theta)
+		goal_left, goal_right = self.choose_order(goal, goal_pose_theta)
+
+		clear_left, hit_left = self.project_ray(self.pose_left, goal_left, lidar)
+		clear_right, hit_right = self.project_ray(self.pose_right, goal_right, lidar)
 		clear_center, hit_center = self.project_ray(position, goal, lidar)
 
 		return clear_left and clear_right and clear_center, hit_left, hit_right, hit_center
@@ -513,6 +515,23 @@ class Bug0():
 			angle = -np.pi/2
 
 		return [position[0] + self.ao_distance * np.cos(theta + angle), position[1] + self.ao_distance * np.sin(theta + angle)]
+
+	def choose_order(self, point, theta):
+		a = self.get_side(point, theta, False)
+		b = self.get_side(point, theta, True)
+		if a[0] > b[0]:
+			right = a
+			left = b
+		elif a[0] < b[0]:
+			right = b
+			left = a
+		elif a[1] > b[1]:
+			right = a
+			left = b
+		else:
+			right = b
+			left = a
+		return left, right
 
 if __name__ == "__main__":
 	rospy.init_node("bug0", anonymous=True)
