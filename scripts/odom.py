@@ -55,8 +55,10 @@ class PuzzlebotLocClass():
 		sigma = np.zeros((3,3))
 
 		Qk = np.zeros((3,3))
-		Rk = np.array([[0.1, 0.0],
+
+		Rk = np.array([[0.02, 0.0],
 			  		   [0.0, 0.02]])
+
 		covariance = np.zeros((2,3))
 		jacobian = np.zeros((3,2))
 
@@ -160,10 +162,6 @@ class PuzzlebotLocClass():
 		odometry.pose.covariance[30] = sigma[2][0]
 		odometry.pose.covariance[31] = sigma[2][1]
 		odometry.pose.covariance[35] = sigma[2][2]
-
-		log = np.array([pose[0], pose[1], pose[2], speed[0], speed[1]])
-		self.LOG = np.append(self.LOG, log)
-
 
 		self.odom_pub.publish(odometry)
 

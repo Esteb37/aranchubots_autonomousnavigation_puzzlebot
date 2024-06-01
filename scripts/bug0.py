@@ -10,6 +10,9 @@ from tf.transformations import euler_from_quaternion, quaternion_from_euler
 
 # This class will make the puzzlebot move to a given goal
 class Bug0():
+
+	ANGLE_OFFSET = np.pi
+
 	def __init__(self):
 		rospy.on_shutdown(self.cleanup)
 
@@ -36,8 +39,8 @@ class Bug0():
 		self.odom_received = False
 		self.theta_fw = 0
 
-		self.max_v = 0.3
-		self.max_w = 1.0
+		self.max_v = 0.12
+		self.max_w = 0.3
 
 		self.closest_angle = 0.0 #Angle to the closest object
 		self.closest_range = 0.0 #Distance to the closest object
@@ -238,10 +241,10 @@ class Bug0():
 				self.goal_received = 0
 
 			elif self.closest_range < self.ao_distance:
-				current_closest_object = self.get_closest_object_pos()
-				distance = self.get_distance(self.last_closest_object, current_closest_object)
+				#current_closest_object = self.get_closest_object_pos()
+				#distance = self.get_distance(self.last_closest_object, current_closest_object)
 
-				if distance > self.eps:
+				#if distance > self.eps:
 					theta_fwc = self.normalize_angle(self.theta_AO - np.pi/2)
 					self.clockwise = abs(theta_fwc - self.theta_gtg)<=np.pi/2
 					self.current_state = "AvoidObstacle"
@@ -294,24 +297,21 @@ class Bug0():
 		# This functions receives a ROS LaserScan message and returns the distance and direction to the closest object
 		ranges = np.array(lidar_msg.ranges)
 		angle_min = lidar_msg.angle_min
+		increment = lidar_msg.angle_increment
 
-		# get front quarter
-		cropped_ranges = ranges[len(ranges)//6*2:len(ranges)//6*4]
-		front_closest = np.min(cropped_ranges)
-
+		# Fill from second to fifth sixths with np.inf
+		sixth = len(ranges) // 6
+		front_ranges = ranges.copy()
+		front_ranges[sixth:sixth*5] = np.inf
+		front_closest = np.min(front_ranges)
 		if front_closest < self.ao_distance:
-			min_idx = np.argmin(cropped_ranges) + len(ranges)//6*2
+			min_idx = np.argmin(front_ranges)
 		else:
-			# get front half
-			cropped_ranges = ranges[len(ranges)//4:len(ranges)//4*3]
-			front_closest = np.min(cropped_ranges)
-			min_idx = np.argmin(cropped_ranges) + len(ranges)//4
+			min_idx = np.argmin(ranges)
 
-		closest_range = ranges[min_idx]
-		closest_angle = angle_min + min_idx * lidar_msg.angle_increment
-		# limit the angle to [-pi, pi]
-		closest_angle = np.arctan2(np.sin(closest_angle), np.cos(closest_angle))
-		return closest_range, closest_angle
+		closest_distance = ranges[min_idx]
+		closest_angle = min_idx * increment + angle_min + self.ANGLE_OFFSET
+		return closest_distance, closest_angle
 
 	def get_theta_gtg(self, x_target, y_target, x_robot, y_robot, theta_robot):
 		theta_target = np.arctan2(y_target - y_robot, x_target - x_robot)
@@ -320,7 +320,7 @@ class Bug0():
 
 	def compute_gtg_control(self, x_target, y_target, x_robot, y_robot, theta_robot):
 		# This function returns the linear and angular speed to reach a given goal
-		kvmax = 0.7 # linear speed maximum gain
+		kvmax = 1.0 # linear speed maximum gain
 		kwmax = 1.0  # angular angular speed maximum gain
 		av = 2.0  # Constant to adjust the exponential's growth rate
 		aw = 2.0  # Constant to adjust the exponential's growth rate
@@ -344,7 +344,7 @@ class Bug0():
 		return v, w
 
 	def compute_fw_control(self, closest_angle, clockwise):
-		kAO = 1.5  # Proportional constant for the angular speed controller
+		kAO = 2.0  # Proportional constant for the angular speed controller
 		closest_angle = self.normalize_angle(closest_angle)
 
 		if clockwise:
