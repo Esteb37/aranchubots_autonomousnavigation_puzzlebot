@@ -11,8 +11,6 @@ from tf.transformations import euler_from_quaternion, quaternion_from_euler
 # This class will make the puzzlebot move to a given goal
 class Bug0():
 
-	ANGLE_OFFSET = np.pi
-
 	def __init__(self):
 		rospy.on_shutdown(self.cleanup)
 
@@ -20,7 +18,9 @@ class Bug0():
 
 		############ Variables ###############
 		self.eps = rospy.get_param(node_name+'/eps', 0.0) #distance to the goal to switch to the next state
-		is_sim = rospy.get_param(node_name+"/is_sim", False)
+		self.is_sim = rospy.get_param(node_name+"/is_sim", False)
+
+		self.ANGLE_OFFSET = 0.0 if self.is_sim else np.pi
 
 		self.clockwise = False
 		self.pose_x = 0.0
@@ -53,8 +53,8 @@ class Bug0():
 		self.hit_distance = np.inf
 
 		###******* INIT PUBLISHERS *******###
-		vel_topic = "/cmd_vel" if not is_sim else "puzzlebot_1/base_controller/cmd_vel"
-		scan_topic = "/scan" if not is_sim else "/puzzlebot_1/scan"
+		vel_topic = "/cmd_vel" if not self.is_sim else "puzzlebot_1/base_controller/cmd_vel"
+		scan_topic = "/scan" if not self.is_sim else "/puzzlebot_1/scan"
 
 		self.pub_cmd_vel = rospy.Publisher(vel_topic, Twist, queue_size=1)
 		pub_theta_gtg = rospy.Publisher('theta_gtg', PoseStamped, queue_size=1)
@@ -241,10 +241,10 @@ class Bug0():
 				self.goal_received = 0
 
 			elif self.closest_range < self.ao_distance:
-				#current_closest_object = self.get_closest_object_pos()
-				#distance = self.get_distance(self.last_closest_object, current_closest_object)
+				current_closest_object = self.get_closest_object_pos()
+				distance = self.get_distance(self.last_closest_object, current_closest_object)
 
-				#if distance > self.eps:
+				if distance > self.eps:
 					theta_fwc = self.normalize_angle(self.theta_AO - np.pi/2)
 					self.clockwise = abs(theta_fwc - self.theta_gtg)<=np.pi/2
 					self.current_state = "AvoidObstacle"
@@ -302,7 +302,13 @@ class Bug0():
 		# Fill from second to fifth sixths with np.inf
 		sixth = len(ranges) // 6
 		front_ranges = ranges.copy()
-		front_ranges[sixth:sixth*5] = np.inf
+
+		if self.is_sim:
+			front_ranges[:sixth*2] = np.inf
+			front_ranges[sixth*4:] = np.inf
+		else:
+			front_ranges[sixth:sixth*5] = np.inf
+
 		front_closest = np.min(front_ranges)
 		if front_closest < self.ao_distance:
 			min_idx = np.argmin(front_ranges)

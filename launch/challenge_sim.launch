@@ -60,7 +60,7 @@
 
 		<node type="rviz" name="rviz" pkg="rviz" args="-d $(find aranchubots_autonomousnavigation_puzzlebot)/rviz/bug0_sim.rviz"/>
 
-		<include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/include/aruco/aruco_detect.launch"/>
+		<include file="$(find aranchubots_autonomousnavigation_puzzlebot)/launch/include/aruco/aruco_detect_sim.launch"/>
 
 		<node pkg="aranchubots_autonomousnavigation_puzzlebot" type="yaml_to_camera_info_publisher.py" name="yaml_to_camera_info_publisher">
 			<param name="is_sim" value="$(arg is_sim)" />
