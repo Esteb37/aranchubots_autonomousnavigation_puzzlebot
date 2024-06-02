@@ -226,6 +226,14 @@ class Bug0():
 			distance = self.get_distance(self.last_closest_object, current_closest_object)
 			return distance > self.jump_distance and abs(self.closest_angle - self.prev_angle) > np.pi / 3 * 2
 
+	def separation_condition(self):
+		if not self.is_sim:
+			return True
+
+		current_closest_object = self.get_closest_object_pos()
+		distance = self.get_distance(self.last_closest_object, current_closest_object)
+		return distance > self.eps
+
 
 	def run_state_machine(self):
 		self.closest_range, self.closest_angle = self.get_closest_object(self.lidar_msg)
@@ -251,10 +259,7 @@ class Bug0():
 				self.goal_received = 0
 
 			elif self.closest_range < self.ao_distance:
-				current_closest_object = self.get_closest_object_pos()
-				distance = self.get_distance(self.last_closest_object, current_closest_object)
-
-				if distance > self.eps:
+				if self.separation_condition():
 					theta_fwc = self.normalize_angle(self.theta_AO - np.pi/2)
 					self.clockwise = abs(theta_fwc - self.theta_gtg)<=np.pi/2
 					self.current_state = "AvoidObstacle"
