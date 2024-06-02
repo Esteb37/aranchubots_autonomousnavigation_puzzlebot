@@ -39,13 +39,14 @@ class Bug0():
 		self.odom_received = False
 		self.theta_fw = 0
 
-		self.max_v = 0.2
-		self.max_w = 0.5
+		self.max_v = 0.2 if self.is_sim else 0.12
+		self.max_w = 0.5 if self.is_sim else 0.3
 
 		self.closest_angle = 0.0 #Angle to the closest object
 		self.closest_range = 0.0 #Distance to the closest object
 		self.ao_distance = 0.25 # distance from closest obstacle to activate the avoid obstacle behavior [m]
 		self.stop_distance = 0.1 # distance from closest obstacle to stop the robot [m]
+		self.jump_distance = 0.35
 
 		self.v_msg = Twist() # Robot's desired speed
 		self.current_state = 'Stop' # Robot's current state
@@ -217,6 +218,15 @@ class Bug0():
 	def ao_condition(self):
 		return abs(self.theta_AO - self.theta_gtg) < np.pi/2 and self.progress() < abs(self.hit_distance - self.eps)
 
+	def jump_condition(self):
+		if self.is_sim:
+			return abs(self.closest_angle - self.prev_angle) > np.pi / 3 * 2
+		else:
+			current_closest_object = self.get_closest_object_pos()
+			distance = self.get_distance(self.last_closest_object, current_closest_object)
+			return distance > self.jump_distance and abs(self.closest_angle - self.prev_angle) > np.pi / 3 * 2
+
+
 	def run_state_machine(self):
 		self.closest_range, self.closest_angle = self.get_closest_object(self.lidar_msg)
 		self.theta_AO = self.get_theta_AO(self.closest_angle)
@@ -275,7 +285,7 @@ class Bug0():
 				self.goal_received = 0
 
 			else:
-				if abs(self.closest_angle - self.prev_angle) > np.pi / 3 * 2:
+				if self.jump_condition():
 					theta_fwc = self.normalize_angle(self.theta_AO - np.pi/2)
 					self.clockwise = abs(theta_fwc - self.theta_gtg)<=np.pi/2
 					print("Jump")
