@@ -39,13 +39,16 @@ class Bug0():
 		self.odom_received = False
 		self.theta_fw = 0
 
-		self.max_v = 0.12
-		self.max_w = 0.3
+		self.max_v = 0.2
+		self.max_w = 0.5
 
 		self.closest_angle = 0.0 #Angle to the closest object
 		self.closest_range = 0.0 #Distance to the closest object
 		self.ao_distance = 0.25 # distance from closest obstacle to activate the avoid obstacle behavior [m]
 		self.stop_distance = 0.1 # distance from closest obstacle to stop the robot [m]
+
+		self.ray_step = 0.01
+		self.ray_number = int(0.19 / self.ray_step)
 
 		self.v_msg = Twist() # Robot's desired speed
 		self.current_state = 'Stop' # Robot's current state
@@ -77,11 +80,8 @@ class Bug0():
 		rate = rospy.Rate(50) #freq Hz
 		self.prev_angle = 0
 
-		self.hit_right = [0, 0]
-		self.hit_left = [0, 0]
-		self.hit_center = [0, 0]
-		self.pose_left = [0, 0]
-		self.pose_right = [0, 0]
+		self.hit_points = []
+		self.ray_origins = []
 
 		while not rospy.is_shutdown() and not self.odom_received:
 			rate.sleep()
@@ -212,8 +212,12 @@ class Bug0():
 			goal_marker.color.b = 0.0
 
 
-			pose = [self.pose_x, self.pose_y]
-			points = [self.hit_left, self.pose_left, pose, self.hit_center, pose, self.pose_right, self.hit_right]
+			points = []
+
+			for i in range(len(self.hit_points)):
+				points.append(self.ray_origins[i])
+				points.append(self.hit_points[i])
+				points.append(self.ray_origins[i])
 
 			path = Path()
 			path.header.frame_id = "odom"
@@ -251,7 +255,7 @@ class Bug0():
 	def run_state_machine(self):
 		self.closest_range, self.closest_angle = self.get_closest_object(self.lidar_msg)
 		self.theta_AO = self.get_theta_AO(self.closest_angle)
-		self.ray_clear, self.hit_left, self.hit_right, self.hit_center = self.get_hit_points([self.pose_x, self.pose_y], [self.x_target, self.y_target], self.lidar_msg)
+		self.ray_clear, self.hit_points = self.get_hit_points([self.pose_x, self.pose_y], [self.x_target, self.y_target], self.lidar_msg)
 
 		if self.current_state == 'Stop':
 			if self.goal_received:
@@ -308,7 +312,7 @@ class Bug0():
 			else:
 				current_closest_object = self.get_closest_object_pos()
 				distance = self.get_distance(self.last_closest_object, current_closest_object)
-				if distance > 0.35 and abs(self.closest_angle - self.prev_angle) > np.pi / 3 * 2:
+				if distance > 0.35 or abs(self.closest_angle - self.prev_angle) > np.pi / 3 * 2:
 					theta_fwc = self.normalize_angle(self.theta_AO - np.pi/2)
 					self.clockwise = abs(theta_fwc - self.theta_gtg)<=np.pi/2
 					print("Jump")
@@ -494,44 +498,53 @@ class Bug0():
 
 	def get_hit_points(self, position, goal, lidar):
 
-		pose_goal_theta = self.normalize_angle(np.arctan2(goal[1] - position[1], goal[0] - position[0]))
-		goal_pose_theta = self.normalize_angle(np.arctan2(position[1] - goal[1], position[0] - goal[0]))
+		theta = self.normalize_angle(np.arctan2(goal[1] - position[1], goal[0] - position[0]))
+		self.ray_origins = self.choose_order(position, theta)
+		ray_goals = self.choose_order(goal, theta)
+		clear = True
+
+		hit_points = [None] * self.ray_number
+		for i in range(self.ray_number):
+			origin_point = self.ray_origins[i]
+			goal_point = ray_goals[i]
+			clear_point, hit_point = self.project_ray(origin_point, goal_point, lidar)
+			hit_points[i] = hit_point
+			if clear_point == False:
+				clear = False
+
+		return clear, hit_points
 
 
-		self.pose_left, self.pose_right = self.choose_order(position, pose_goal_theta)
-		goal_left, goal_right = self.choose_order(goal, goal_pose_theta)
-
-		clear_left, hit_left = self.project_ray(self.pose_left, goal_left, lidar)
-		clear_right, hit_right = self.project_ray(self.pose_right, goal_right, lidar)
-		clear_center, hit_center = self.project_ray(position, goal, lidar)
-
-		return clear_left and clear_right and clear_center, hit_left, hit_right, hit_center
-
-
-	def get_side(self, position, theta, right):
+	def get_side(self, position, distance, theta, right):
 		if right:
 			angle = np.pi/2
 		else:
 			angle = -np.pi/2
 
-		return [position[0] + self.ao_distance * np.cos(theta + angle), position[1] + self.ao_distance * np.sin(theta + angle)]
+		return [position[0] + distance * np.cos(theta + angle), position[1] + distance * np.sin(theta + angle)]
 
 	def choose_order(self, point, theta):
-		a = self.get_side(point, theta, False)
-		b = self.get_side(point, theta, True)
-		if a[0] > b[0]:
+		a = []
+		b = []
+		for i in range(self.ray_number // 2):
+			distance = self.ray_step * i * 2
+			a.append(self.get_side(point, distance, theta, False))
+			b.append(self.get_side(point, distance, theta, True))
+
+		if a[0][0] > b[0][0]:
 			right = a
 			left = b
-		elif a[0] < b[0]:
+		elif a[0][0] < b[0][0]:
 			right = b
 			left = a
-		elif a[1] > b[1]:
+		elif a[0][1] > b[0][1]:
 			right = a
 			left = b
 		else:
 			right = b
 			left = a
-		return left, right
+
+		return left + [point] + right
 
 if __name__ == "__main__":
 	rospy.init_node("bug0", anonymous=True)
