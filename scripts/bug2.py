@@ -8,10 +8,10 @@ import numpy as np
 # This class will make the puzzlebot move to a given goal
 class Bug2(Bug0):
 
-	ray_distance = 0.03
+	RAY_DISTANCE = 0.03
 
 	def ao_condition(self):
-		return self.distance_to_line([self.pose_x, self.pose_y], self.ray_trace) < self.ray_distance and self.progress() < abs(self.hit_distance - self.eps)
+		return self.distance_to_line([self.pose_x, self.pose_y], self.ray_trace) < self.RAY_DISTANCE and self.progress() < abs(self.hit_distance - self.eps)
 
 	def additional_init(self):
 		self.pub_ray_trace = rospy.Publisher('ray_trace', Path, queue_size=1)
@@ -50,8 +50,6 @@ class Bug2(Bug0):
 
 		self.pub_ray_trace.publish(path)
 
-
-
 	def get_ray_trace(self, a, b):
 		x1 = a[0]
 		y1 = a[1]
@@ -80,9 +78,9 @@ class Bug2(Bug0):
 		self.x_target = msg.pose.position.x
 		self.y_target = msg.pose.position.y
 		self.goal_received = 1
-		self.calculate_ray()
 		self.current_state = "GoToGoal"
 		self.hit_distance = np.inf
+		self.calculate_ray()
 
 if __name__ == "__main__":
 	rospy.init_node("bug2", anonymous=True)

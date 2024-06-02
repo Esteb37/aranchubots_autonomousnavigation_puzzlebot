@@ -7,18 +7,12 @@ Panels:
         - /Global Options1
         - /Status1
         - /Odometry1
+        - /Odometry1/Shape1
         - /Odometry1/Covariance1
-        - /LaserScan1
         - /LaserScan1/Autocompute Value Bounds1
         - /Pose1
-        - /Pose2
-        - /Marker1
         - /Marker1/Namespaces1
-        - /Marker3
-        - /MarkerArray1
         - /MarkerArray1/Namespaces1
-        - /Pose3
-        - /Path2
       Splitter Ratio: 0.5
     Tree Height: 549
   - Class: rviz/Selection
@@ -91,9 +85,9 @@ Visualization Manager:
         Axes Length: 1
         Axes Radius: 0.10000000149011612
         Color: 255; 25; 0
-        Head Length: 0.30000001192092896
+        Head Length: 0.10000000149011612
         Head Radius: 0.10000000149011612
-        Shaft Length: 1
+        Shaft Length: 0.5
         Shaft Radius: 0.05000000074505806
         Value: Arrow
       Topic: /odom
@@ -133,11 +127,11 @@ Visualization Manager:
       Class: rviz/Pose
       Color: 252; 233; 79
       Enabled: true
-      Head Length: 0.30000001192092896
+      Head Length: 0.10000000149011612
       Head Radius: 0.10000000149011612
       Name: Pose
       Queue Size: 10
-      Shaft Length: 1
+      Shaft Length: 0.5
       Shaft Radius: 0.05000000074505806
       Shape: Arrow
       Topic: /theta_gtg
@@ -354,9 +348,9 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 2.084512948989868
-        Y: -0.9486992955207825
-        Z: -0.5037463307380676
+        X: 0.9987174272537231
+        Y: -0.7951433658599854
+        Z: -0.30638256669044495
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
