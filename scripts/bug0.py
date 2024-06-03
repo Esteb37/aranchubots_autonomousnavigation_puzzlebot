@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import rospy
 from geometry_msgs.msg import Twist, PoseStamped
-from visualization_msgs.msg import Marker
+from visualization_msgs.msg import Marker, MarkerArray
 from sensor_msgs.msg import LaserScan #Lidar
 from nav_msgs.msg import Odometry
 import numpy as np
@@ -12,6 +12,12 @@ from tf.transformations import euler_from_quaternion, quaternion_from_euler
 class Bug0():
 
 	ANGLE_OFFSET = np.pi
+
+	GOALS = [[0.5, 1.55 - 2],
+			[1.38, 1.03 - 2],
+			[2.05, 0.35 - 2],
+			[2.97, 0.4 - 2],
+			[0.5, 1.55 - 2]]
 
 	def __init__(self):
 		rospy.on_shutdown(self.cleanup)
@@ -63,7 +69,7 @@ class Bug0():
 		pub_mode = rospy.Publisher('mode', Marker, queue_size=1)
 		pub_theta_fw = rospy.Publisher('theta_fw', PoseStamped, queue_size=1)
 		pub_goal = rospy.Publisher('goal_marker', Marker, queue_size=1)
-
+		pub_goals = rospy.Publisher("goals", MarkerArray, queue_size=1)
 		rospy.Subscriber(scan_topic, LaserScan, self.laser_cb)
 		rospy.Subscriber("/move_base_simple/goal", PoseStamped, self.goal_cb)
 		rospy.Subscriber("/odom", Odometry, self.odom_cb)
@@ -204,6 +210,36 @@ class Bug0():
 			goal_marker.color.g = 1.0
 			goal_marker.color.b = 0.0
 
+
+			marker_array = MarkerArray()
+			for i, goal in enumerate(self.GOALS):
+				m = Marker()
+				m.header.frame_id = "map"
+				m.header.stamp = rospy.Time.now()
+				m.ns = "goal_markers"
+				m.id = i
+				m.type = m.CUBE
+				m.action = m.ADD
+				m.pose.position.x = goal[0]
+				m.pose.position.y = goal[1]
+				m.pose.position.z = 0
+				m.pose.orientation.x = 0.0
+				m.pose.orientation.y = 0.0
+				m.pose.orientation.z = 0.0
+				m.pose.orientation.w = 1.0
+				m.scale.x = self.target_position_tolerance
+				m.scale.y = self.target_position_tolerance
+				m.scale.z = 0.01
+				m.color.a = 1.0
+				m.color.r = 1.0
+				m.color.g = 0.0
+				m.color.b = 1.0
+				m.lifetime = rospy.Duration(1)
+				marker_array.markers.append(m)
+
+			pub_goals.publish(marker_array)
+
+
 			pub_goal.publish(goal_marker)
 			pub_mode.publish(marker_mode)
 			pub_closest_object.publish(marker_closest)
@@ -241,10 +277,10 @@ class Bug0():
 				self.goal_received = 0
 
 			elif self.closest_range < self.ao_distance:
-				#current_closest_object = self.get_closest_object_pos()
-				#distance = self.get_distance(self.last_closest_object, current_closest_object)
+				current_closest_object = self.get_closest_object_pos()
+				distance = self.get_distance(self.last_closest_object, current_closest_object)
 
-				#if distance > self.eps:
+				if distance > self.eps:
 					theta_fwc = self.normalize_angle(self.theta_AO - np.pi/2)
 					self.clockwise = abs(theta_fwc - self.theta_gtg)<=np.pi/2
 					self.current_state = "AvoidObstacle"

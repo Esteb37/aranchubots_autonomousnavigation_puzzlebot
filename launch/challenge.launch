@@ -8,9 +8,9 @@
 		<arg name="image" default="/image_compressed/compressed"/>
     	<arg name="camera_info" default="/camera_info"/>
 
-        <arg name="pos_x" default="0.325"/>
-		<arg name="pos_y" default="-0.285"/>
-		<arg name="pos_theta" default="0.0"/>
+        <arg name="pos_x" default="2.3"/>
+		<arg name="pos_y" default="-0.96"/>
+		<arg name="pos_theta" default="3.14"/>
 
 		<arg name="eps" default="0.05"/>
 
