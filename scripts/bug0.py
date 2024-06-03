@@ -26,7 +26,9 @@ class Bug0():
 
 		############ Variables ###############
 		self.eps = rospy.get_param(node_name+'/eps', 0.0) #distance to the goal to switch to the next state
-		is_sim = rospy.get_param(node_name+"/is_sim", False)
+		self.is_sim = rospy.get_param(node_name+"/is_sim", False)
+
+		self.ANGLE_OFFSET = 0.0 if self.is_sim else np.pi
 
 		self.clockwise = False
 		self.pose_x = 0.0
@@ -45,22 +47,24 @@ class Bug0():
 		self.odom_received = False
 		self.theta_fw = 0
 
-		self.max_v = 0.12
-		self.max_w = 0.3
+		self.max_v = 0.2 if self.is_sim else 0.12
+		self.max_w = 0.5 if self.is_sim else 0.3
 
 		self.closest_angle = 0.0 #Angle to the closest object
 		self.closest_range = 0.0 #Distance to the closest object
 		self.ao_distance = 0.25 # distance from closest obstacle to activate the avoid obstacle behavior [m]
 		self.stop_distance = 0.1 # distance from closest obstacle to stop the robot [m]
+		self.jump_distance = 0.35
 
 		self.v_msg = Twist() # Robot's desired speed
 		self.current_state = 'Stop' # Robot's current state
 		self.theta_AO = 0.0
 		self.hit_distance = np.inf
+		self.lidar_msg = None
 
 		###******* INIT PUBLISHERS *******###
-		vel_topic = "/cmd_vel" if not is_sim else "puzzlebot_1/base_controller/cmd_vel"
-		scan_topic = "/scan" if not is_sim else "/puzzlebot_1/scan"
+		vel_topic = "/cmd_vel" if not self.is_sim else "puzzlebot_1/base_controller/cmd_vel"
+		scan_topic = "/scan" if not self.is_sim else "/puzzlebot_1/scan"
 
 		self.pub_cmd_vel = rospy.Publisher(vel_topic, Twist, queue_size=1)
 		pub_theta_gtg = rospy.Publisher('theta_gtg', PoseStamped, queue_size=1)
@@ -171,19 +175,16 @@ class Bug0():
 			marker_mode.pose.orientation.y = 0.0
 			marker_mode.pose.orientation.z = 0.0
 			marker_mode.pose.orientation.w = 1.0
-
+			marker_mode.color.a = 0.7
 			if self.current_state == 'Stop':
-				marker_mode.color.a = 1.0
 				marker_mode.color.r = 0.0
 				marker_mode.color.g = 1.0
 				marker_mode.color.b = 0.0
 			elif self.current_state == 'GoToGoal':
-				marker_mode.color.a = 1.0
 				marker_mode.color.r = 1.0
 				marker_mode.color.g = 1.0
 				marker_mode.color.b = 0.0
 			elif self.current_state == 'AvoidObstacle':
-				marker_mode.color.a = 1.0
 				marker_mode.color.r = 0.0
 				marker_mode.color.g = 0.0
 				marker_mode.color.b = 1.0
@@ -255,9 +256,25 @@ class Bug0():
 	def ao_condition(self):
 		return abs(self.theta_AO - self.theta_gtg) < np.pi/2 and self.progress() < abs(self.hit_distance - self.eps)
 
+	def jump_condition(self):
+		if self.is_sim:
+			return abs(self.closest_angle - self.prev_angle) > np.pi / 3 * 2
+		else:
+			current_closest_object = self.get_closest_object_pos()
+			distance = self.get_distance(self.last_closest_object, current_closest_object)
+			return distance > self.jump_distance and abs(self.closest_angle - self.prev_angle) > np.pi / 3 * 2
+
+	def separation_condition(self):
+		current_closest_object = self.get_closest_object_pos()
+		distance = self.get_distance(self.last_closest_object, current_closest_object)
+		return distance > self.eps
+
+
 	def run_state_machine(self):
 		self.closest_range, self.closest_angle = self.get_closest_object(self.lidar_msg)
 		self.theta_AO = self.get_theta_AO(self.closest_angle)
+		self.additional_state_setup()
+
 		if self.current_state == 'Stop':
 			if self.goal_received:
 				print("Going to goal")
@@ -277,10 +294,7 @@ class Bug0():
 				self.goal_received = 0
 
 			elif self.closest_range < self.ao_distance:
-				current_closest_object = self.get_closest_object_pos()
-				distance = self.get_distance(self.last_closest_object, current_closest_object)
-
-				if distance > self.eps:
+				if self.separation_condition():
 					theta_fwc = self.normalize_angle(self.theta_AO - np.pi/2)
 					self.clockwise = abs(theta_fwc - self.theta_gtg)<=np.pi/2
 					self.current_state = "AvoidObstacle"
@@ -311,9 +325,7 @@ class Bug0():
 				self.goal_received = 0
 
 			else:
-				current_closest_object = self.get_closest_object_pos()
-				distance = self.get_distance(self.last_closest_object, current_closest_object)
-				if distance > 0.35 and abs(self.closest_angle - self.prev_angle) > np.pi / 3 * 2:
+				if self.jump_condition():
 					theta_fwc = self.normalize_angle(self.theta_AO - np.pi/2)
 					self.clockwise = abs(theta_fwc - self.theta_gtg)<=np.pi/2
 					print("Jump")
@@ -338,7 +350,13 @@ class Bug0():
 		# Fill from second to fifth sixths with np.inf
 		sixth = len(ranges) // 6
 		front_ranges = ranges.copy()
-		front_ranges[sixth:sixth*5] = np.inf
+
+		if self.is_sim:
+			front_ranges[:sixth*2] = np.inf
+			front_ranges[sixth*4:] = np.inf
+		else:
+			front_ranges[sixth:sixth*5] = np.inf
+
 		front_closest = np.min(front_ranges)
 		if front_closest < self.ao_distance:
 			min_idx = np.argmin(front_ranges)
@@ -428,6 +446,7 @@ class Bug0():
 		self.x_target = msg.pose.position.x
 		self.y_target = msg.pose.position.y
 		self.goal_received = 1
+		self.current_state = "GoToGoal"
 		self.hit_distance = np.inf
 
 
@@ -458,6 +477,9 @@ class Bug0():
 		pass
 
 	def additional_publish(self):
+		pass
+
+	def additional_state_setup(self):
 		pass
 
 	def get_closest_object_pos(self):

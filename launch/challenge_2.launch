@@ -27,7 +27,7 @@
 		</node>
 
 
-		<node pkg="aranchubots_autonomousnavigation_puzzlebot" type="bug0.py" name="bug0" output="screen">
+		<node pkg="aranchubots_autonomousnavigation_puzzlebot" type="bug2.py" name="bug2" output="screen">
 			<param name="eps" value="$(arg eps)" />
 			<param name="is_sim" value="$(arg is_sim)" />
 		</node>

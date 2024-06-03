@@ -7,16 +7,12 @@ Panels:
         - /Global Options1
         - /Status1
         - /Odometry1
-        - /LaserScan1
+        - /Odometry1/Shape1
+        - /Odometry1/Covariance1
         - /LaserScan1/Autocompute Value Bounds1
         - /Pose1
-        - /Pose2
-        - /Marker1
         - /Marker1/Namespaces1
-        - /Marker3
-        - /MarkerArray1
         - /MarkerArray1/Namespaces1
-        - /Pose3
       Splitter Ratio: 0.5
     Tree Height: 549
   - Class: rviz/Selection
@@ -78,7 +74,7 @@ Visualization Manager:
           Color: 204; 51; 204
           Scale: 1
           Value: true
-        Value: false
+        Value: true
       Enabled: true
       Keep: 1
       Name: Odometry
@@ -89,9 +85,9 @@ Visualization Manager:
         Axes Length: 1
         Axes Radius: 0.10000000149011612
         Color: 255; 25; 0
-        Head Length: 0.30000001192092896
+        Head Length: 0.10000000149011612
         Head Radius: 0.10000000149011612
-        Shaft Length: 1
+        Shaft Length: 0.5
         Shaft Radius: 0.05000000074505806
         Value: Arrow
       Topic: /odom
@@ -100,8 +96,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 0.11365000158548355
-        Min Value: 0.11365000158548355
+        Max Value: 0.04639999940991402
+        Min Value: 0.04639999940991402
         Value: true
       Axis: Z
       Channel Name: x
@@ -131,11 +127,11 @@ Visualization Manager:
       Class: rviz/Pose
       Color: 252; 233; 79
       Enabled: true
-      Head Length: 0.30000001192092896
+      Head Length: 0.10000000149011612
       Head Radius: 0.10000000149011612
       Name: Pose
       Queue Size: 10
-      Shaft Length: 1
+      Shaft Length: 0.5
       Shaft Radius: 0.05000000074505806
       Shape: Arrow
       Topic: /theta_gtg
@@ -146,7 +142,7 @@ Visualization Manager:
       Axes Radius: 0.10000000149011612
       Class: rviz/Pose
       Color: 0; 255; 0
-      Enabled: true
+      Enabled: false
       Head Length: 0.30000001192092896
       Head Radius: 0.10000000149011612
       Name: Pose
@@ -156,7 +152,7 @@ Visualization Manager:
       Shape: Arrow
       Topic: /theta_AO
       Unreliable: false
-      Value: true
+      Value: false
     - Class: rviz/Marker
       Enabled: true
       Marker Topic: /closest_object
@@ -202,7 +198,7 @@ Visualization Manager:
       Marker Topic: /goal_marker
       Name: Marker
       Namespaces:
-        {}
+        goal: true
       Queue Size: 100
       Value: true
     - Alpha: 1
@@ -273,7 +269,7 @@ Visualization Manager:
       Axes Radius: 0.10000000149011612
       Class: rviz/Pose
       Color: 173; 127; 168
-      Enabled: true
+      Enabled: false
       Head Length: 0.30000001192092896
       Head Radius: 0.10000000149011612
       Name: Pose
@@ -283,6 +279,38 @@ Visualization Manager:
       Shape: Arrow
       Topic: /theta_fw
       Unreliable: false
+      Value: false
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz/Path
+      Color: 32; 74; 135
+      Enabled: true
+      Head Diameter: 0.30000001192092896
+      Head Length: 0.20000000298023224
+      Length: 0.30000001192092896
+      Line Style: Lines
+      Line Width: 0.029999999329447746
+      Name: Path
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Color: 255; 85; 255
+      Pose Style: None
+      Queue Size: 10
+      Radius: 0.029999999329447746
+      Shaft Diameter: 0.10000000149011612
+      Shaft Length: 0.10000000149011612
+      Topic: /ray
+      Unreliable: false
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /hit_points
+      Name: MarkerArray
+      Namespaces:
+        {}
+      Queue Size: 100
       Value: true
   Enabled: true
   Global Options:
@@ -312,7 +340,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 12.393497467041016
+      Distance: 6.540444374084473
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -320,9 +348,9 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 0
-        Y: 0
-        Z: 0
+        X: 0.9987174272537231
+        Y: -0.7951433658599854
+        Z: -0.30638256669044495
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
