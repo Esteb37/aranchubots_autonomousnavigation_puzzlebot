@@ -41,7 +41,7 @@ class Bug0():
 
 		self.goal_received = False #flag to indicate if the goal has been received
 		self.lidar_received = 0 #flag to indicate if the laser scan has been received
-		self.target_position_tolerance = 0.2 #acceptable distance to the goal to declare the robot has arrived to it [m]
+		self.target_position_tolerance = 0.1 #acceptable distance to the goal to declare the robot has arrived to it [m]
 		self.wr = 0.0 # right wheel speed [rad/s]
 		self.wl = 0.0 # left wheel speed [rad/s]
 		self.odom_received = False
@@ -53,6 +53,7 @@ class Bug0():
 		self.closest_angle = 0.0 #Angle to the closest object
 		self.closest_range = 0.0 #Distance to the closest object
 		self.ao_distance = 0.25 # distance from closest obstacle to activate the avoid obstacle behavior [m]
+		self.main_ao_distance = 0.25
 		self.stop_distance = 0.1 # distance from closest obstacle to stop the robot [m]
 		self.jump_distance = 0.35
 
@@ -176,6 +177,7 @@ class Bug0():
 			marker_mode.pose.orientation.z = 0.0
 			marker_mode.pose.orientation.w = 1.0
 			marker_mode.color.a = 0.7
+
 			if self.current_state == 'Stop':
 				marker_mode.color.r = 0.0
 				marker_mode.color.g = 1.0
@@ -265,9 +267,7 @@ class Bug0():
 			return distance > self.jump_distance and abs(self.closest_angle - self.prev_angle) > np.pi / 3 * 2
 
 	def separation_condition(self):
-		current_closest_object = self.get_closest_object_pos()
-		distance = self.get_distance(self.last_closest_object, current_closest_object)
-		return distance > self.eps
+		return True
 
 
 	def run_state_machine(self):
@@ -287,6 +287,7 @@ class Bug0():
 				print("At goal")
 				self.current_state = "Stop"
 				self.goal_received = 0
+				self.ao_distance = self.main_ao_distance
 
 			elif self.closest_range < self.stop_distance:
 				print("Too close")
@@ -295,6 +296,7 @@ class Bug0():
 
 			elif self.closest_range < self.ao_distance:
 				if self.separation_condition():
+					self.ao_distance = self.main_ao_distance
 					theta_fwc = self.normalize_angle(self.theta_AO - np.pi/2)
 					self.clockwise = abs(theta_fwc - self.theta_gtg)<=np.pi/2
 					self.current_state = "AvoidObstacle"
@@ -310,9 +312,9 @@ class Bug0():
 
 		elif self.current_state == 'AvoidObstacle':
 			if self.ao_condition():
-				self.last_closest_object = self.get_closest_object_pos()
 				self.current_state = "GoToGoal"
 				print("Going to goal")
+				self.ao_distance = 0.20
 
 			if self.at_goal():
 				print("At goal")

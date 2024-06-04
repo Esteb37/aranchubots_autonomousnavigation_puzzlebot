@@ -12,6 +12,7 @@ Panels:
         - /LaserScan1/Autocompute Value Bounds1
         - /Pose1
         - /Marker1/Namespaces1
+        - /Path1
         - /MarkerArray1/Namespaces1
       Splitter Ratio: 0.5
     Tree Height: 549
@@ -96,8 +97,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 0.04639999940991402
-        Min Value: 0.04639999940991402
+        Max Value: 0.11365000158548355
+        Min Value: 0.11365000158548355
         Value: true
       Axis: Z
       Channel Name: x
@@ -172,7 +173,7 @@ Visualization Manager:
     - Alpha: 1
       Buffer Length: 1
       Class: rviz/Path
-      Color: 25; 255; 0
+      Color: 92; 53; 102
       Enabled: true
       Head Diameter: 0.30000001192092896
       Head Length: 0.20000000298023224
@@ -310,6 +311,14 @@ Visualization Manager:
       Name: MarkerArray
       Namespaces:
         {}
+      Queue Size: 100
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /goals
+      Name: MarkerArray
+      Namespaces:
+        goal_markers: true
       Queue Size: 100
       Value: true
   Enabled: true

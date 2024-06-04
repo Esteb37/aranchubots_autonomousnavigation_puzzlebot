@@ -134,10 +134,70 @@
       </link>
     </model>
     <state world_name='default'>
-      <sim_time>603 838000000</sim_time>
-      <real_time>429 973320654</real_time>
-      <wall_time>1716940318 56782550</wall_time>
-      <iterations>398397</iterations>
+      <sim_time>679 44000000</sim_time>
+      <real_time>76 319645639</real_time>
+      <wall_time>1717445179 533280744</wall_time>
+      <iterations>75206</iterations>
+      <model name='aruco_marker_1'>
+        <pose>0.01 -0.4 0.1 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>0.01 -0.4 0.1 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='aruco_marker_2'>
+        <pose>0 -1.2 0.1 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>0 -1.2 0.1 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='aruco_marker_3'>
+        <pose>2.58 -1.61 0.1 0 -0 3.14</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>2.58 -1.61 0.1 0 -0 3.14</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='aruco_marker_4'>
+        <pose>2.85 -1.99 0.1 0 -0 1.57</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>2.85 -1.99 0.1 0 -0 1.57</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='aruco_marker_5'>
+        <pose>2.865 -0.01 0.1 0 0 -1.57</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>2.865 -0.01 0.1 0 0 -1.57</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='aruco_marker_6'>
+        <pose>1.735 -0.78 0.1 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>1.735 -0.78 0.1 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
       <model name='ground_plane'>
         <pose>0 0 0 0 -0 0</pose>
         <scale>1 1 1</scale>
@@ -148,11 +208,33 @@
           <wrench>0 0 0 0 -0 0</wrench>
         </link>
       </model>
+      <model name='puzzlebot_1'>
+        <pose>2.3 -0.96 -0.001001 1e-06 0.005178 3.14003</pose>
+        <scale>1 1 1</scale>
+        <link name='base_footprint'>
+          <pose>2.3 -0.96 -0.001001 1e-06 0.005178 3.14003</pose>
+          <velocity>1e-06 -0 3.2e-05 -3e-06 5.2e-05 3e-06</velocity>
+          <acceleration>0 0 -0 0 -0 0</acceleration>
+          <wrench>0 0 -0 0 -0 0</wrench>
+        </link>
+        <link name='wheel_left_link'>
+          <pose>2.29959 -1.055 0.048996 -1.57079 0.005161 3.14003</pose>
+          <velocity>3e-06 1e-06 3.2e-05 -2e-05 6.6e-05 3e-06</velocity>
+          <acceleration>0 0 0 -1.5e-05 -0.009752 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='wheel_right_link'>
+          <pose>2.29989 -0.865 0.048996 -1.57079 0.005271 3.14003</pose>
+          <velocity>2e-06 1e-06 3.2e-05 -1.9e-05 5.1e-05 3e-06</velocity>
+          <acceleration>-0 -0 0 1e-06 0.000674 0</acceleration>
+          <wrench>-0 -0 0 0 -0 0</wrench>
+        </link>
+      </model>
       <model name='simulation_map'>
-        <pose>-0.013072 -0.009932 0 0 -0 0</pose>
+        <pose>-0.005903 -2.01156 0 0 -0 0</pose>
         <scale>1 1 1</scale>
         <link name='walls'>
-          <pose>-0.013072 -0.009932 0 0 -0 0</pose>
+          <pose>-0.005903 -2.01156 0 0 -0 0</pose>
           <velocity>0 0 0 0 -0 0</velocity>
           <acceleration>0 0 0 0 -0 0</acceleration>
           <wrench>0 0 0 0 -0 0</wrench>
@@ -164,7 +246,7 @@
     </state>
     <gui fullscreen='0'>
       <camera name='user_camera'>
-        <pose>4.88674 -0.333939 3.75659 0 0.857798 -3.08303</pose>
+        <pose>2.84425 -0.219525 11.7635 4e-06 1.5698 1.65617</pose>
         <view_controller>orbit</view_controller>
         <projection_type>perspective</projection_type>
       </camera>
@@ -344,7 +426,7 @@
       </link>
     </model>
     <model name='aruco_marker_3'>
-      <pose>2.58 -1.61 0.1 0 -0 3.14 </pose>
+      <pose>2.58 -1.61 0.1 0 -0 3.14</pose>
       <static>1</static>
       <link name='link'>
         <inertial>
@@ -435,7 +517,7 @@
       <static>1</static>
       <link name='link'>
         <inertial>
-          <pose>0 0 0 0 0 0</pose>
+          <pose>0 0 0 0 -0 0</pose>
           <mass>0.281</mass>
           <inertia>
             <ixx>0.0006167</ixx>
@@ -690,6 +772,650 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
+    </model>
+    <model name='puzzlebot_1'>
+      <link name='base_footprint'>
+        <inertial>
+          <pose>-0.031096 -0.00012 0.079807 0 -0 0</pose>
+          <mass>1.3595</mass>
+          <inertia>
+            <ixx>0.00448024</ixx>
+            <ixy>3.4235e-06</ixy>
+            <ixz>-0.00111316</ixz>
+            <iyy>0.0059978</iyy>
+            <iyz>3.18967e-06</iyz>
+            <izz>0.00539551</izz>
+          </inertia>
+        </inertial>
+        <collision name='base_footprint_fixed_joint_lump__base_link_collision'>
+          <pose>-0.052 0 0.05 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.2 0.16 0.0503</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <collision name='base_footprint_fixed_joint_lump__camera_base_link_collision_1'>
+          <pose>0.052757 0 0.09505 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.041 0.042 0.04</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <collision name='base_footprint_fixed_joint_lump__camera_link_collision_2'>
+          <pose>0.072857 0 0.0985 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.005 0.005 0.005</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <collision name='base_footprint_fixed_joint_lump__caster_holder_link_collision_3'>
+          <pose>-0.147 0 0.019275 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.0175 0.023 0.01115</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <collision name='base_footprint_fixed_joint_lump__wheel_caster_link_collision_4'>
+          <pose>-0.147 0 0.006737 0 -0 0</pose>
+          <geometry>
+            <sphere>
+              <radius>0.0065</radius>
+            </sphere>
+          </geometry>
+          <surface>
+            <contact>
+              <ode>
+                <kp>1e+06</kp>
+                <kd>10</kd>
+                <max_vel>0.1</max_vel>
+                <min_depth>0.001</min_depth>
+              </ode>
+            </contact>
+            <friction>
+              <ode>
+                <mu>0.08</mu>
+                <mu2>0.08</mu2>
+                <fdir1>1 0 0</fdir1>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <collision name='base_footprint_fixed_joint_lump__jetson_link_collision_5'>
+          <pose>-0.017689 -0.003 0.094286 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.079 0.1 0.038271</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <collision name='base_footprint_fixed_joint_lump__lidar_base_link_collision_6'>
+          <pose>-0.0095 0 0.11765 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.115 0.16 0.005</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <collision name='base_footprint_fixed_joint_lump__laser_link_collision_7'>
+          <pose>-0.015602 0 0.14715 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.0968 0.0703 0.051</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <collision name='base_footprint_fixed_joint_lump__motor_left_link_collision_8'>
+          <pose>0 0.038775 0.05 1.5708 -0 0</pose>
+          <geometry>
+            <cylinder>
+              <length>0.06645</length>
+              <radius>0.0125</radius>
+            </cylinder>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <collision name='base_footprint_fixed_joint_lump__motor_right_link_collision_9'>
+          <pose>0 -0.038775 0.05 1.5708 -0 0</pose>
+          <geometry>
+            <cylinder>
+              <length>0.06645</length>
+              <radius>0.0125</radius>
+            </cylinder>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <collision name='base_footprint_fixed_joint_lump__powerbank_link_collision_10'>
+          <pose>-0.082 0 0.03585 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.13 0.07 0.012</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='base_footprint_fixed_joint_lump__base_link_visual'>
+          <pose>-0.052 0 0.05 1.5708 -0 1.5708</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>file:///home/estebanpadilla/catkin_ws/src/puzzlebot_description/meshes/bases/MCR2_puzzlebot_chassis_v1_2.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Yellow</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='base_footprint_fixed_joint_lump__camera_base_link_visual_1'>
+          <pose>0.052757 0 0.09505 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>file:///home/estebanpadilla/catkin_ws/src/puzzlebot_description/meshes/sensors/MCR2_puzzlebot_camera.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='base_footprint_fixed_joint_lump__caster_holder_link_visual_2'>
+          <pose>-0.147 0 0.012775 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>file:///home/estebanpadilla/catkin_ws/src/puzzlebot_description/meshes/wheels/MCR2_puzzlebot_casterball.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Black</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='base_footprint_fixed_joint_lump__jetson_link_visual_3'>
+          <pose>-0.017689 -0.003 0.094286 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>file:///home/estebanpadilla/catkin_ws/src/puzzlebot_description/meshes/misc/MCR2_nvidia_jetson_v1_2.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='base_footprint_fixed_joint_lump__lidar_base_link_visual_4'>
+          <pose>-0.0095 0 0.0964 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>file:///home/estebanpadilla/catkin_ws/src/puzzlebot_description/meshes/bases/MCR2_puzzlebot_lidar_base_v1.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Yellow</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='base_footprint_fixed_joint_lump__laser_link_visual_5'>
+          <pose>-0.002363 0 0.16365 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>file:///home/estebanpadilla/catkin_ws/src/puzzlebot_description/meshes/sensors/MCR2_puzzlebot_lidar_sensor_v1.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='base_footprint_fixed_joint_lump__motor_left_link_visual_6'>
+          <pose>0 0.047775 0.05 0 -0 1.5708</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>file:///home/estebanpadilla/catkin_ws/src/puzzlebot_description/meshes/misc/MCR2_dc_motor_left.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='base_footprint_fixed_joint_lump__motor_right_link_visual_7'>
+          <pose>0 -0.047775 0.05 0 0 -1.5708</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>file:///home/estebanpadilla/catkin_ws/src/puzzlebot_description/meshes/misc/MCR2_dc_motor_right.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='base_footprint_fixed_joint_lump__powerbank_link_visual_8'>
+          <pose>-0.082 0 0.03585 1.5708 -0 1.5708</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>file:///home/estebanpadilla/catkin_ws/src/puzzlebot_description/meshes/misc/MCR2_puzzlebot_battery.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Black</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <sensor name='rpi_camera_v2' type='camera'>
+          <update_rate>30</update_rate>
+          <visualize>0</visualize>
+          <camera name='head'>
+            <horizontal_fov>1.089</horizontal_fov>
+            <image>
+              <width>640</width>
+              <height>480</height>
+              <format>R8G8B8</format>
+            </image>
+            <clip>
+              <near>0.05</near>
+              <far>8</far>
+            </clip>
+            <noise>
+              <type>gaussian</type>
+              <mean>0</mean>
+              <stddev>0.007</stddev>
+            </noise>
+          </camera>
+          <plugin name='camera_controller' filename='libgazebo_ros_camera.so'>
+            <alwaysOn>1</alwaysOn>
+            <updateRate>0.0</updateRate>
+            <cameraName>camera</cameraName>
+            <imageTopicName>image_raw</imageTopicName>
+            <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+            <frameName>camera_link</frameName>
+            <hackBaseline>0.07</hackBaseline>
+            <distortionK1>0.0</distortionK1>
+            <distortionK2>0.0</distortionK2>
+            <distortionK3>0.0</distortionK3>
+            <distortionT1>0.0</distortionT1>
+            <distortionT2>0.0</distortionT2>
+            <robotNamespace>/puzzlebot_1/</robotNamespace>
+          </plugin>
+          <pose>0.072857 0 0.0985 0 -0 0</pose>
+        </sensor>
+        <sensor name='head_rplidar_sensor' type='ray'>
+          <visualize>0</visualize>
+          <update_rate>10</update_rate>
+          <ray>
+            <scan>
+              <horizontal>
+                <samples>360</samples>
+                <resolution>1</resolution>
+                <min_angle>-3.14159</min_angle>
+                <max_angle>3.14159</max_angle>
+              </horizontal>
+              <vertical>
+                <samples>1</samples>
+                <min_angle>0</min_angle>
+                <max_angle>0</max_angle>
+              </vertical>
+            </scan>
+            <range>
+              <min>0.15</min>
+              <max>12</max>
+              <resolution>0.01</resolution>
+            </range>
+            <noise>
+              <type>gaussian</type>
+              <mean>0</mean>
+              <stddev>0.01</stddev>
+            </noise>
+          </ray>
+          <plugin name='gazebo_ros_head_rplidar_controller' filename='libgazebo_ros_laser.so'>
+            <topicName>scan</topicName>
+            <frameName>laser_link</frameName>
+            <robotNamespace>/puzzlebot_1/</robotNamespace>
+          </plugin>
+          <pose>-0.002363 0 0.16365 0 -0 0</pose>
+        </sensor>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='wheel_left_joint' type='revolute'>
+        <pose relative_to='base_footprint'>0 0.095 0.05 -1.5708 0 0</pose>
+        <parent>base_footprint</parent>
+        <child>wheel_left_link</child>
+        <axis>
+          <xyz>0 0 1</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='wheel_left_link'>
+        <pose relative_to='wheel_left_joint'>0 0 0 0 -0 0</pose>
+        <inertial>
+          <pose>0 0 0 0 -0 0</pose>
+          <mass>0.027</mass>
+          <inertia>
+            <ixx>1.79859e-05</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>1.79859e-05</iyy>
+            <iyz>0</iyz>
+            <izz>3.58594e-05</izz>
+          </inertia>
+        </inertial>
+        <collision name='wheel_left_link_collision'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <cylinder>
+              <length>0.005</length>
+              <radius>0.05</radius>
+            </cylinder>
+          </geometry>
+          <surface>
+            <contact>
+              <ode>
+                <kp>700000</kp>
+                <kd>80</kd>
+                <max_vel>0.1</max_vel>
+                <min_depth>0.001</min_depth>
+              </ode>
+            </contact>
+            <friction>
+              <ode>
+                <mu>1</mu>
+                <mu2>1</mu2>
+                <fdir1>1 0 0</fdir1>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='wheel_left_link_visual'>
+          <pose>0 0 0 3.14159 1.57079 3.14159</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>file:///home/estebanpadilla/catkin_ws/src/puzzlebot_description/meshes/wheels/MCR2_puzzlebot_wheel.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Black</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='wheel_right_joint' type='revolute'>
+        <pose relative_to='base_footprint'>0 -0.095 0.05 -1.5708 0 0</pose>
+        <parent>base_footprint</parent>
+        <child>wheel_right_link</child>
+        <axis>
+          <xyz>0 0 1</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='wheel_right_link'>
+        <pose relative_to='wheel_right_joint'>0 0 0 0 -0 0</pose>
+        <inertial>
+          <pose>0 0 0 0 -0 0</pose>
+          <mass>0.027</mass>
+          <inertia>
+            <ixx>1.79859e-05</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>1.79859e-05</iyy>
+            <iyz>0</iyz>
+            <izz>3.58594e-05</izz>
+          </inertia>
+        </inertial>
+        <collision name='wheel_right_link_collision'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <cylinder>
+              <length>0.005</length>
+              <radius>0.05</radius>
+            </cylinder>
+          </geometry>
+          <surface>
+            <contact>
+              <ode>
+                <kp>700000</kp>
+                <kd>80</kd>
+                <max_vel>0.1</max_vel>
+                <min_depth>0.001</min_depth>
+              </ode>
+            </contact>
+            <friction>
+              <ode>
+                <mu>1</mu>
+                <mu2>1</mu2>
+                <fdir1>1 0 0</fdir1>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='wheel_right_link_visual'>
+          <pose>0 0 0 3.14159 -1.57079 3.14159</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>file:///home/estebanpadilla/catkin_ws/src/puzzlebot_description/meshes/wheels/MCR2_puzzlebot_wheel.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Black</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <plugin name='gazebo_ros_control' filename='libgazebo_ros_control.so'>
+        <robotNamespace>/puzzlebot_1/</robotNamespace>
+      </plugin>
+      <static>0</static>
+      <plugin name='p3d_controller_ground_truth' filename='libgazebo_ros_p3d.so'>
+        <alwaysOn>1</alwaysOn>
+        <frameName>world</frameName>
+        <topicName>base_pose_ground_truth</topicName>
+        <updateRate>30.0</updateRate>
+        <robotNamespace>/puzzlebot_1/</robotNamespace>
+        <bodyName>base_footprint</bodyName>
+        <xyzOffset>-0.052 0 0.05</xyzOffset>
+        <rpyOffset>0 -0 0</rpyOffset>
+        <ignition::corrected_offsets>1</ignition::corrected_offsets>
+      </plugin>
+      <pose>2.3 -0.96 0 0 -0 3.14</pose>
     </model>
   </world>
 </sdf>

@@ -8,10 +8,18 @@ import numpy as np
 # This class will make the puzzlebot move to a given goal
 class Bug2(Bug0):
 
-	RAY_DISTANCE = 0.03
+	RAY_DISTANCE = 0.1
+
+	last_ray_hit = [0, 0]
 
 	def ao_condition(self):
-		return self.distance_to_line([self.pose_x, self.pose_y], self.ray_trace) < self.RAY_DISTANCE and self.progress() < abs(self.hit_distance - self.eps)
+		condition = self.distance_to_line([self.pose_x, self.pose_y], self.ray_trace) < self.RAY_DISTANCE and self.progress() < abs(self.hit_distance - self.eps)
+		if condition:
+			self.hit_distance = self.progress()
+		return condition
+
+	def separation_condition(self):
+		return True
 
 	def additional_init(self):
 		self.pub_ray_trace = rospy.Publisher('ray_trace', Path, queue_size=1)
@@ -27,8 +35,8 @@ class Bug2(Bug0):
 		pose = PoseStamped()
 		pose.header.stamp = rospy.Time.now()
 		pose.header.frame_id = "odom"
-		pose.pose.position.x = self.x_target
-		pose.pose.position.y = self.y_target
+		pose.pose.position.x = 0
+		pose.pose.position.y = self.ray_trace[1]
 		pose.pose.position.z = 0
 		pose.pose.orientation.x = 0
 		pose.pose.orientation.y = 0
@@ -39,8 +47,8 @@ class Bug2(Bug0):
 		pose = PoseStamped()
 		pose.header.stamp = rospy.Time.now()
 		pose.header.frame_id = "odom"
-		pose.pose.position.x = self.start_x
-		pose.pose.position.y = self.start_y
+		pose.pose.position.x = 3.2
+		pose.pose.position.y = self.ray_trace[0]*3.2 + self.ray_trace[1]
 		pose.pose.position.z = 0
 		pose.pose.orientation.x = 0
 		pose.pose.orientation.y = 0
@@ -49,6 +57,7 @@ class Bug2(Bug0):
 		path.poses.append(pose)
 
 		self.pub_ray_trace.publish(path)
+
 
 	def get_ray_trace(self, a, b):
 		x1 = a[0]

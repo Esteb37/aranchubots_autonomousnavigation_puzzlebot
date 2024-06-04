@@ -12,7 +12,7 @@
 		<arg name="pos_y" default="-0.96"/>
 		<arg name="pos_theta" default="3.14"/>
 
-		<arg name="eps" default="0.05"/>
+		<arg name="eps" default="0.1"/>
 
 		<arg name="is_sim" default="false" />
 
