@@ -1,6 +1,9 @@
 # 🤖 Autonomous Navigation PuzzleBot 
 
-This project utilizes ROS 1 to implement autonomous navigation of a simulated robot called PuzzleBot in a Gazebo environment. The use instructions included demonstrates the process of creating the ROS package, setting up the simulation launch in Gazebo, and configuring RVIZ for visualizing both mapping and navigation of the robot.
+This project utilizes ROS 1 to implement autonomous navigation of a simulated robot called PuzzleBot in a Gazebo environment. The use instructions included demonstrates the process of creating the ROS package, setting up the simulation launch in Gazebo, and 
+configuring RVIZ for visualizing both mapping and navigation of the robot.
+
+[![Watch the video](https://img.youtube.com/vi/cKHk5dFEsmY/maxres1.jpg)](https://youtu.be/cKHk5dFEsmY)
 
 # [Read the report](https://github.com/Esteb37/aranchubots_autonomousnavigation_puzzlebot/blob/master/1717648959000Evidencia%201.%20Reporte%20escrito%20del%20proyecto.pdf)
 
